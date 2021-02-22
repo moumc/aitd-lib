@@ -1,8 +1,8 @@
 import * as _ from 'lodash'
-import binary from 'ripple-binary-codec'
+import binary from 'aitd-binary-codec'
 import * as utils from './utils'
 import BigNumber from 'bignumber.js'
-import {decodeAccountID} from 'ripple-address-codec'
+import {decodeAccountID} from 'aitd-address-codec'
 import {validate} from '../common'
 import {computeBinaryTransactionHash} from '../common/hashes'
 

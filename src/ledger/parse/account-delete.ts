@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import {removeUndefined} from '../../common'
-import {classicAddressToXAddress} from 'ripple-address-codec'
+import {classicAddressToXAddress} from 'aitd-address-codec'
 
 export type FormattedAccountDelete = {
   // account (address) of an account to receive any leftover XRP after deleting the sending account.

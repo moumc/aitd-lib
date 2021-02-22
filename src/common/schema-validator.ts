@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as assert from 'assert'
 const {Validator} = require('jsonschema')
 import {ValidationError} from './errors'
-import {isValidClassicAddress, isValidXAddress} from 'ripple-address-codec'
+import {isValidClassicAddress, isValidXAddress} from 'aitd-address-codec'
 import {isValidSecret} from './utils'
 
 function loadSchemas() {
@@ -50,6 +50,7 @@ function loadSchemas() {
     require('./schemas/objects/settings-plus-memos.json'),
     require('./schemas/specifications/settings.json'),
     require('./schemas/specifications/payment.json'),
+    require('./schemas/specifications/contract.json'),
     require('./schemas/specifications/get-payment.json'),
     require('./schemas/specifications/escrow-cancellation.json'),
     require('./schemas/specifications/order-cancellation.json'),
@@ -103,6 +104,7 @@ function loadSchemas() {
     require('./schemas/input/get-transactions.json'),
     require('./schemas/input/get-trustlines.json'),
     require('./schemas/input/prepare-payment.json'),
+    require('./schemas/input/prepare-contract.json'),
     require('./schemas/input/prepare-order.json'),
     require('./schemas/input/prepare-trustline.json'),
     require('./schemas/input/prepare-order-cancellation.json'),

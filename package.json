@@ -1,8 +1,8 @@
 {
-  "name": "ripple-lib",
-  "version": "1.9.0",
+  "name": "aitd-lib",
+  "version": "1.0.0",
   "license": "ISC",
-  "description": "A TypeScript/JavaScript API for interacting with the XRP Ledger in Node.js and the browser",
+  "description": "A TypeScript/JavaScript API for interacting with the AITD Ledger in Node.js and the browser",
   "files": [
     "dist/npm/*",
     "build/ripple-latest-min.js",
@@ -27,8 +27,8 @@
     "jsonschema": "1.2.2",
     "lodash": "^4.17.4",
     "lodash.isequal": "^4.5.0",
-    "ripple-address-codec": "^4.1.1",
-    "ripple-binary-codec": "^1.1.0",
+    "aitd-address-codec": "^1.0.2",
+    "aitd-binary-codec": "^1.0.1",
     "ripple-keypairs": "^1.0.0",
     "ripple-lib-transactionparser": "0.8.2",
     "ws": "^7.2.0"
@@ -82,7 +82,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ripple/ripple-lib.git"
+    "url": "git://github.com/moumc/aitd-lib.git"
   },
   "readmeFilename": "README.md",
   "engines": {

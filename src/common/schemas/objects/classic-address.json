@@ -5,5 +5,5 @@
   "type": "string",
   "format": "classicAddress",
   "link": "classic-address",
-  "pattern": "^r[1-9A-HJ-NP-Za-km-z]{24,34}$"
+  "pattern": "^a[1-9A-HJ-NP-Za-km-z]{24,34}$"
 }

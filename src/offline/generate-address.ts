@@ -1,4 +1,4 @@
-import {classicAddressToXAddress} from 'ripple-address-codec'
+import {classicAddressToXAddress} from 'aitd-address-codec'
 import keypairs from 'ripple-keypairs'
 import {errors, validate} from '../common'
 

@@ -30,6 +30,7 @@ import getAccountInfo from './ledger/accountinfo'
 import getAccountObjects from './ledger/accountobjects'
 import getPaymentChannel from './ledger/payment-channel'
 import preparePayment from './transaction/payment'
+import prepareContract from './transaction/contract'
 import prepareTrustline from './transaction/trustline'
 import prepareOrder from './transaction/order'
 import prepareOrderCancellation from './transaction/ordercancellation'
@@ -89,7 +90,7 @@ import {getServerInfo, getFee} from './common/serverinfo'
 import {clamp, renameCounterpartyToIssuer} from './ledger/utils'
 import {TransactionJSON, Instructions, Prepare} from './transaction/types'
 import {ConnectionUserOptions} from './common/connection'
-import {isValidXAddress, isValidClassicAddress} from 'ripple-address-codec'
+import {isValidXAddress, isValidClassicAddress} from 'aitd-address-codec'
 import {
   computeBinaryTransactionHash,
   computeTransactionHash,
@@ -384,6 +385,7 @@ class RippleAPI extends EventEmitter {
   parseAccountFlags = parseAccountFlags
 
   preparePayment = preparePayment
+  prepareContract = prepareContract
   prepareTrustline = prepareTrustline
   prepareOrder = prepareOrder
   prepareOrderCancellation = prepareOrderCancellation

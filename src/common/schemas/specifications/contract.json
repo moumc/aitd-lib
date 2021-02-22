@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "contract",
+  "link": "contract",
+  "type": "object",
+  "properties": {
+    "source": {
+      "$ref": "address",
+      "description": "The address to send from."
+    },
+    "contractAddress": {
+      "$ref": "address",
+      "description": "The destination of the contract address"
+    },
+    "contractData": {
+      "type": "string",
+      "description": "The contract data"
+    },
+    "fee": {
+      "description": "The contract transction fee",
+      "type": "string"
+    }
+  },
+  "required": ["source", "contractData", "fee"],
+  "additionalProperties": false
+}

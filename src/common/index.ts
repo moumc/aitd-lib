@@ -2,7 +2,7 @@ import * as constants from './constants'
 import * as errors from './errors'
 import * as validate from './validate'
 import * as serverInfo from './serverinfo'
-import {xAddressToClassicAddress, isValidXAddress} from 'ripple-address-codec'
+import {xAddressToClassicAddress, isValidXAddress} from 'aitd-address-codec'
 
 export function ensureClassicAddress(account: string): string {
   if (isValidXAddress(account)) {

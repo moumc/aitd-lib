@@ -70,6 +70,11 @@ export const preparePayment = _.partial(
   'preparePaymentParameters'
 )
 
+export const prepareContract = _.partial(
+  schemaValidate,
+  'prepareContractParameters'
+)
+
 export const prepareOrder = _.partial(schemaValidate, 'prepareOrderParameters')
 
 export const prepareOrderCancellation = _.partial(
