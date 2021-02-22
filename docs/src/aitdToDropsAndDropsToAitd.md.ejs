@@ -1,0 +1,47 @@
+## aitdToDrops
+
+`aitdToDrops(aitd: string | BigNumber): string`
+
+Converts an AITD amount to drops. 1 AITD = 1,000,000 drops, so 1 drop = 0.000001 AITD. This method is useful when converting amounts for use with the aitdd API, which requires AITD amounts to be specified in drops.
+
+### Parameters
+
+`aitd`: A string or BigNumber representing an amount of AITD. If `aitd` is a string, it may start with `-`, must contain at least one number, and may contain up to one `.`. This method throws a `ValidationError` for invalid input.
+
+### Return Value
+
+A string representing an equivalent amount of drops.
+
+### Example
+
+```javascript
+return api.aitdToDrops('1');
+```
+
+```json
+'1000000'
+```
+
+## dropsToAitd
+
+`dropsToAitd(drops: string | BigNumber): string`
+
+Converts an amount of drops to AITD. 1 drop = 0.000001 AITD, so 1 AITD = 1,000,000 drops. This method is useful when converting amounts from the aitdd API, which describes AITD amounts in drops.
+
+### Parameters
+
+`drops`: A string or BigNumber representing an amount of drops. If `drops` is a string, it may start with `-` and must contain at least one number. This method throws a `ValidationError` for invalid input.
+
+### Return Value
+
+A string representing an equivalent amount of AITD.
+
+### Example
+
+```javascript
+return api.dropsToAitd('1');
+```
+
+```json
+'0.000001'
+```

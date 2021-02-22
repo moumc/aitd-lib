@@ -27,10 +27,10 @@ export default <TestSuite>{
     assert.strictEqual(fee, '2')
   },
 
-  'getFee - high load_factor with custom maxFeeXRP': async (api, address) => {
-    // Ensure that overriding with high maxFeeXRP of '51540' causes no errors.
+  'getFee - high load_factor with custom maxFeeAITD': async (api, address) => {
+    // Ensure that overriding with high maxFeeAITD of '51540' causes no errors.
     // (fee will actually be 51539.607552)
-    api._maxFeeXRP = '51540'
+    api._maxFeeAITD = '51540'
     api.connection.request({
       command: 'config',
       data: {highLoadFactor: true}

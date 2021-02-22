@@ -2,10 +2,10 @@ import _ from 'lodash'
 import net from 'net'
 import assert from 'assert-diff'
 import setupAPI from './setup-api'
-import {RippleAPI} from 'ripple-api'
-import ledgerClose from './fixtures/rippled/ledger-close.json'
+import {AitdAPI} from 'aitd-api'
+import ledgerClose from './fixtures/aitdd/ledger-close.json'
 import {ignoreWebSocketDisconnect} from './utils'
-const utils = RippleAPI._PRIVATE.ledgerUtils
+const utils = AitdAPI._PRIVATE.ledgerUtils
 
 const TIMEOUT = 200000 // how long before each test case times out
 const isBrowser = (process as any).browser
@@ -98,7 +98,7 @@ describe('Connection', function () {
     )
     assert.strictEqual(await this.api.connection.getFeeBase(), 10)
     assert.strictEqual(await this.api.connection.getFeeRef(), 10)
-    assert.strictEqual(await this.api.connection.getReserveBase(), 20000000) // 20 XRP
+    assert.strictEqual(await this.api.connection.getReserveBase(), 20000000) // 20 AITD
   })
 
   it('with proxy', function (done) {
@@ -167,7 +167,7 @@ describe('Connection', function () {
 
     // Address where no one listens
     const connection = new utils.common.Connection(
-      'ws://testripple.circleci.com:129'
+      'ws://testaitd.circleci.com:129'
     )
     connection.on('error', done)
     connection.connect().catch((error) => {
@@ -450,10 +450,10 @@ describe('Connection', function () {
 
   it('connect multiserver error', function () {
     assert.throws(function () {
-      new RippleAPI({
+      new AitdAPI({
         servers: ['wss://server1.com', 'wss://server2.com']
       } as any)
-    }, this.api.errors.RippleError)
+    }, this.api.errors.AitdError)
   })
 
   it('connect throws error', function (done) {
@@ -529,9 +529,9 @@ describe('Connection', function () {
     )
   })
 
-  it('propagates RippledError data', function (done) {
+  it('propagates AitddError data', function (done) {
     this.api.request('subscribe', {streams: 'validations'}).catch((error) => {
-      assert.strictEqual(error.name, 'RippledError')
+      assert.strictEqual(error.name, 'AitddError')
       assert.strictEqual(error.data.error, 'invalidParams')
       assert.strictEqual(error.message, 'Invalid parameters.')
       assert.strictEqual(error.data.error_code, 31)
@@ -549,7 +549,7 @@ describe('Connection', function () {
 
   it('unrecognized message type', function (done) {
     // This enables us to automatically support any
-    // new messages added by rippled in the future.
+    // new messages added by aitdd in the future.
     this.api.connection.on('unknown', (event) => {
       assert.deepEqual(event, {type: 'unknown'})
       done()
@@ -568,7 +568,7 @@ describe('Connection', function () {
   })
 
   it(
-    'should throw RippledNotInitializedError if server does not have ' +
+    'should throw AitddNotInitializedError if server does not have ' +
       'validated ledgers',
     async function () {
       this.timeout(3000)
@@ -578,15 +578,15 @@ describe('Connection', function () {
         data: {returnEmptySubscribeRequest: 1}
       })
 
-      const api = new RippleAPI({server: this.api.connection._url})
+      const api = new AitdAPI({server: this.api.connection._url})
       return api.connect().then(
         () => {
           assert(false, 'Must have thrown!')
         },
         (error) => {
           assert(
-            error instanceof this.api.errors.RippledNotInitializedError,
-            'Must throw RippledNotInitializedError, got instead ' +
+            error instanceof this.api.errors.AitddNotInitializedError,
+            'Must throw AitddNotInitializedError, got instead ' +
               String(error)
           )
         }

@@ -1,11 +1,11 @@
 import assert from 'assert-diff'
-import {RippleAPI} from 'ripple-api'
-import binary from 'ripple-binary-codec'
+import {AitdAPI} from 'aitd-api'
+import binary from 'aitd-binary-codec'
 import requests from '../../fixtures/requests'
 import responses from '../../fixtures/responses'
 import {TestSuite} from '../../utils'
 
-const {schemaValidator} = RippleAPI._PRIVATE
+const {schemaValidator} = AitdAPI._PRIVATE
 const {sign: REQUEST_FIXTURES} = requests
 const {sign: RESPONSE_FIXTURES} = responses
 
@@ -208,7 +208,7 @@ export default <TestSuite>{
         value: '3.140000'
       },
       totalPrice: {
-        currency: 'XRP',
+        currency: 'AITD',
         value: '31415'
       }
     }
@@ -271,7 +271,7 @@ export default <TestSuite>{
     }, /Error: 1123456\.7 is an illegal amount/)
   },
 
-  'throws when Fee exceeds maxFeeXRP (in drops)': async (api, address) => {
+  'throws when Fee exceeds maxFeeAITD (in drops)': async (api, address) => {
     const secret = 'shsWGZcmZz6YsWWmcnpfr6fLTdtFV'
     const request = {
       txJSON: `{"Flags":2147483648,"TransactionType":"AccountSet","Account":"${address}","Domain":"726970706C652E636F6D","LastLedgerSequence":8820051,"Fee":"2010000","Sequence":23,"SigningPubKey":"02F89EAEC7667B30F33D0687BBA86C3FE2A08CCA40A9186C5BDE2DAA6FA97A37D8"}`,
@@ -284,14 +284,14 @@ export default <TestSuite>{
 
     assert.throws(() => {
       api.sign(request.txJSON, secret)
-    }, /Fee" should not exceed "2000000"\. To use a higher fee, set `maxFeeXRP` in the RippleAPI constructor\./)
+    }, /Fee" should not exceed "2000000"\. To use a higher fee, set `maxFeeAITD` in the AitdAPI constructor\./)
   },
 
-  'throws when Fee exceeds maxFeeXRP (in drops) - custom maxFeeXRP': async (
+  'throws when Fee exceeds maxFeeAITD (in drops) - custom maxFeeAITD': async (
     api,
     address
   ) => {
-    api._maxFeeXRP = '1.9'
+    api._maxFeeAITD = '1.9'
     const secret = 'shsWGZcmZz6YsWWmcnpfr6fLTdtFV'
     const request = {
       txJSON: `{"Flags":2147483648,"TransactionType":"AccountSet","Account":"${address}","Domain":"726970706C652E636F6D","LastLedgerSequence":8820051,"Fee":"2010000","Sequence":23,"SigningPubKey":"02F89EAEC7667B30F33D0687BBA86C3FE2A08CCA40A9186C5BDE2DAA6FA97A37D8"}`,
@@ -304,14 +304,14 @@ export default <TestSuite>{
 
     assert.throws(() => {
       api.sign(request.txJSON, secret)
-    }, /Fee" should not exceed "1900000"\. To use a higher fee, set `maxFeeXRP` in the RippleAPI constructor\./)
+    }, /Fee" should not exceed "1900000"\. To use a higher fee, set `maxFeeAITD` in the AitdAPI constructor\./)
   },
 
-  'permits fee exceeding 2000000 drops when maxFeeXRP is higher than 2 XRP': async (
+  'permits fee exceeding 2000000 drops when maxFeeAITD is higher than 2 AITD': async (
     api,
     address
   ) => {
-    api._maxFeeXRP = '2.1'
+    api._maxFeeAITD = '2.1'
     const secret = 'shsWGZcmZz6YsWWmcnpfr6fLTdtFV'
     const request = {
       // TODO: This fails when address is X-address

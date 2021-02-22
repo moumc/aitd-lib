@@ -2,10 +2,10 @@ import _ from 'lodash'
 import assert from 'assert-diff'
 import setupAPI from './setup-api'
 import responses from './fixtures/responses'
-import ledgerClosed from './fixtures/rippled/ledger-close.json'
-import {RippleAPI} from 'ripple-api'
+import ledgerClosed from './fixtures/aitdd/ledger-close.json'
+import {AitdAPI} from 'aitd-api'
 import {ignoreWebSocketDisconnect} from './utils'
-const schemaValidator = RippleAPI._PRIVATE.schemaValidator
+const schemaValidator = AitdAPI._PRIVATE.schemaValidator
 
 const TIMEOUT = 20000
 
@@ -21,7 +21,7 @@ function checkResult(expected, schemaName, response) {
   return response
 }
 
-describe('RippleAPIBroadcast', function () {
+describe('AitdAPIBroadcast', function () {
   this.timeout(TIMEOUT)
   beforeEach(setupAPI.setupBroadcast)
   afterEach(setupAPI.teardown)

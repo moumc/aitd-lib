@@ -1,6 +1,6 @@
-import {RippleAPI} from '../../dist/npm'
+import {AitdAPI} from '../../dist/npm'
 
-const api = new RippleAPI({server: 'wss://s.altnet.rippletest.net:51233'})
+const api = new AitdAPI({server: 'wss://s.altnet.aitdtest.net:51233'})
 
 parseAccountFlags()
 

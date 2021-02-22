@@ -1,12 +1,12 @@
 import {assertResultMatch, TestSuite, assertRejects} from '../../utils'
 import responses from '../../fixtures/responses'
 import requests from '../../fixtures/requests'
-import {ValidationError} from 'ripple-api/common/errors'
-import binary from 'ripple-binary-codec'
+import {ValidationError} from 'aitd-api/common/errors'
+import binary from 'aitd-binary-codec'
 import assert from 'assert-diff'
-import {RippleAPI} from 'ripple-api'
+import {AitdAPI} from 'aitd-api'
 
-const {schemaValidator} = RippleAPI._PRIVATE
+const {schemaValidator} = AitdAPI._PRIVATE
 const instructionsWithMaxLedgerVersionOffset = {maxLedgerVersionOffset: 100}
 const {preparePayment: REQUEST_FIXTURES} = requests
 const {preparePayment: RESPONSE_FIXTURES} = responses
@@ -31,37 +31,37 @@ export default <TestSuite>{
     assertResultMatch(response, RESPONSE_FIXTURES.normal, 'prepare')
   },
 
-  'min amount xrp': async (api, address) => {
+  'min amount aitd': async (api, address) => {
     const localInstructions = {
       ...instructionsWithMaxLedgerVersionOffset,
       maxFee: '0.000012'
     }
     const response = await api.preparePayment(
       address,
-      REQUEST_FIXTURES.minAmountXRP,
+      REQUEST_FIXTURES.minAmountAITD,
       localInstructions
     )
-    assertResultMatch(response, RESPONSE_FIXTURES.minAmountXRP, 'prepare')
+    assertResultMatch(response, RESPONSE_FIXTURES.minAmountAITD, 'prepare')
   },
 
-  'min amount xrp2xrp': async (api, address) => {
+  'min amount aitd2aitd': async (api, address) => {
     const response = await api.preparePayment(
       address,
       REQUEST_FIXTURES.minAmount,
       instructionsWithMaxLedgerVersionOffset
     )
-    assertResultMatch(response, RESPONSE_FIXTURES.minAmountXRPXRP, 'prepare')
+    assertResultMatch(response, RESPONSE_FIXTURES.minAmountAITDAITD, 'prepare')
   },
 
-  'XRP to XRP': async (api, address) => {
+  'AITD to AITD': async (api, address) => {
     const payment = {
       source: {
         address: 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59',
-        maxAmount: {value: '1', currency: 'XRP'}
+        maxAmount: {value: '1', currency: 'AITD'}
       },
       destination: {
         address: 'rpZc4mVfWUif9CRoHRKKcmhu1nx2xktxBo',
-        amount: {value: '1', currency: 'XRP'}
+        amount: {value: '1', currency: 'AITD'}
       }
     }
     const expected = {
@@ -81,7 +81,7 @@ export default <TestSuite>{
     assertResultMatch(response, expected, 'prepare')
   },
 
-  'XRP drops to XRP drops': async (api, address) => {
+  'AITD drops to AITD drops': async (api, address) => {
     const payment = {
       source: {
         address: 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59',
@@ -109,7 +109,7 @@ export default <TestSuite>{
     assertResultMatch(response, expected, 'prepare')
   },
 
-  'XRP drops to XRP': async (api, address) => {
+  'AITD drops to AITD': async (api, address) => {
     const payment = {
       source: {
         address: 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59',
@@ -117,7 +117,7 @@ export default <TestSuite>{
       },
       destination: {
         address: 'rpZc4mVfWUif9CRoHRKKcmhu1nx2xktxBo',
-        amount: {value: '1', currency: 'XRP'}
+        amount: {value: '1', currency: 'AITD'}
       }
     }
     const expected = {
@@ -137,11 +137,11 @@ export default <TestSuite>{
     assertResultMatch(response, expected, 'prepare')
   },
 
-  'XRP to XRP drops': async (api, address) => {
+  'AITD to AITD drops': async (api, address) => {
     const payment = {
       source: {
         address: 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59',
-        maxAmount: {value: '1', currency: 'XRP'}
+        maxAmount: {value: '1', currency: 'AITD'}
       },
       destination: {
         address: 'rpZc4mVfWUif9CRoHRKKcmhu1nx2xktxBo',
@@ -209,7 +209,7 @@ export default <TestSuite>{
     )
   },
 
-  'rejects promise and does not throw when fee exceeds maxFeeXRP': async (
+  'rejects promise and does not throw when fee exceeds maxFeeAITD': async (
     api,
     address
   ) => {
@@ -226,15 +226,15 @@ export default <TestSuite>{
     return assertRejects(
       api.preparePayment(address, payment, {fee: '3'}),
       ValidationError,
-      'Fee of 3 XRP exceeds max of 2 XRP. To use this fee, increase `maxFeeXRP` in the RippleAPI constructor.'
+      'Fee of 3 AITD exceeds max of 2 AITD. To use this fee, increase `maxFeeAITD` in the AitdAPI constructor.'
     )
   },
 
-  'XRP to XRP no partial': async (api, address) => {
+  'AITD to AITD no partial': async (api, address) => {
     return assertRejects(
       api.preparePayment(address, REQUEST_FIXTURES.wrongPartial),
       ValidationError,
-      'XRP to XRP payments cannot be partial payments'
+      'AITD to AITD payments cannot be partial payments'
     )
   },
 
@@ -254,7 +254,7 @@ export default <TestSuite>{
     )
   },
 
-  'throws when fee exceeds 2 XRP': async (api, address) => {
+  'throws when fee exceeds 2 AITD': async (api, address) => {
     const localInstructions = {
       ...instructionsWithMaxLedgerVersionOffset,
       fee: '2.1'
@@ -262,7 +262,7 @@ export default <TestSuite>{
     return assertRejects(
       api.preparePayment(address, REQUEST_FIXTURES.normal, localInstructions),
       ValidationError,
-      'Fee of 2.1 XRP exceeds max of 2 XRP. To use this fee, increase `maxFeeXRP` in the RippleAPI constructor.'
+      'Fee of 2.1 AITD exceeds max of 2 AITD. To use this fee, increase `maxFeeAITD` in the AitdAPI constructor.'
     )
   },
 
@@ -327,7 +327,7 @@ export default <TestSuite>{
     )
 
     // Important: check that the prepared transaction can actually be signed
-    // https://github.com/ripple/ripple-lib/issues/1237#issuecomment-631670946
+    // https://github.com/aitd/aitd-lib/issues/1237#issuecomment-631670946
 
     const secret = 'shotKgaEotpcYsshSE39vmSnBDRim'
     const result = api.sign(response.txJSON, secret)
@@ -354,7 +354,7 @@ export default <TestSuite>{
     assertResultMatch(response, RESPONSE_FIXTURES.minAmount, 'prepare')
   },
 
-  'caps fee at 2 XRP by default': async (api, address) => {
+  'caps fee at 2 AITD by default': async (api, address) => {
     api._feeCushion = 1000000
     const expectedResponse = {
       txJSON:
@@ -373,11 +373,11 @@ export default <TestSuite>{
     assertResultMatch(response, expectedResponse, 'prepare')
   },
 
-  'allows fee exceeding 2 XRP when maxFeeXRP is higher': async (
+  'allows fee exceeding 2 AITD when maxFeeAITD is higher': async (
     api,
     address
   ) => {
-    api._maxFeeXRP = '2.2'
+    api._maxFeeAITD = '2.2'
     const localInstructions = {
       ...instructionsWithMaxLedgerVersionOffset,
       fee: '2.1'
@@ -399,7 +399,7 @@ export default <TestSuite>{
     assertResultMatch(response, expectedResponse, 'prepare')
   },
 
-  'fee - default maxFee of 2 XRP': async (api, address) => {
+  'fee - default maxFee of 2 AITD': async (api, address) => {
     api._feeCushion = 1000000
     const expectedResponse = {
       txJSON:
@@ -418,12 +418,12 @@ export default <TestSuite>{
     assertResultMatch(response, expectedResponse, 'prepare')
   },
 
-  'fee - capped to maxFeeXRP when maxFee exceeds maxFeeXRP': async (
+  'fee - capped to maxFeeAITD when maxFee exceeds maxFeeAITD': async (
     api,
     address
   ) => {
     api._feeCushion = 1000000
-    api._maxFeeXRP = '3'
+    api._maxFeeAITD = '3'
     const localInstructions = {
       ...instructionsWithMaxLedgerVersionOffset,
       maxFee: '4'
@@ -447,7 +447,7 @@ export default <TestSuite>{
 
   'fee - capped to maxFee': async (api, address) => {
     api._feeCushion = 1000000
-    api._maxFeeXRP = '5'
+    api._maxFeeAITD = '5'
     const localInstructions = {
       ...instructionsWithMaxLedgerVersionOffset,
       maxFee: '4'

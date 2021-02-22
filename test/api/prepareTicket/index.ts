@@ -1,12 +1,12 @@
 import {assertResultMatch, TestSuite} from '../../utils'
 // import responses from '../../fixtures/responses'
 // import requests from '../../fixtures/requests'
-// import {ValidationError} from 'ripple-api/common/errors'
-// import binary from 'ripple-binary-codec'
+// import {ValidationError} from 'aitd-api/common/errors'
+// import binary from 'aitd-binary-codec'
 // import assert from 'assert-diff'
-// import {RippleAPI} from 'ripple-api'
+// import {AitdAPI} from 'aitd-api'
 
-// const {schemaValidator} = RippleAPI._PRIVATE
+// const {schemaValidator} = AitdAPI._PRIVATE
 // const instructionsWithMaxLedgerVersionOffset = {maxLedgerVersionOffset: 100}
 // const {preparePayment: REQUEST_FIXTURES} = requests
 // const {preparePayment: RESPONSE_FIXTURES} = responses

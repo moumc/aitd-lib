@@ -1,6 +1,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-# RippleAPI Reference
+# AitdAPI Reference
 
 - [Introduction](#introduction)
   - [Boilerplate](#boilerplate)
@@ -33,7 +33,7 @@
   - [Payment Channel Create](#payment-channel-create)
   - [Payment Channel Fund](#payment-channel-fund)
   - [Payment Channel Claim](#payment-channel-claim)
-- [rippled APIs](#rippled-apis)
+- [aitdd APIs](#aitdd-apis)
   - [Listening to streams](#listening-to-streams)
   - [request](#request)
   - [hasNextPage](#hasnextpage)
@@ -91,10 +91,10 @@
   - [signPaymentChannelClaim](#signpaymentchannelclaim)
   - [verifyPaymentChannelClaim](#verifypaymentchannelclaim)
   - [computeLedgerHash](#computeledgerhash)
-  - [xrpToDrops](#xrptodrops)
-  - [dropsToXrp](#dropstoxrp)
-  - [iso8601ToRippleTime](#iso8601torippletime)
-  - [rippleTimeToISO8601](#rippletimetoiso8601)
+  - [aitdToDrops](#aitdtodrops)
+  - [dropsToAitd](#dropstoaitd)
+  - [iso8601ToAitdTime](#iso8601toaitdtime)
+  - [aitdTimeToISO8601](#aitdtimetoiso8601)
   - [txFlags](#txflags)
   - [schemaValidator](#schemavalidator)
   - [schemaValidate](#schemavalidate)
@@ -108,29 +108,29 @@
 
 # Introduction
 
-RippleAPI (ripple-lib) is the official client library to the XRP Ledger. Currently, RippleAPI is only available in JavaScript/TypeScript.
+AitdAPI (aitd-lib) is the official client library to the AITD Ledger. Currently, AitdAPI is only available in JavaScript/TypeScript.
 
-Using RippleAPI, you can:
+Using AitdAPI, you can:
 
-* [Query transactions from the XRP Ledger history](#gettransaction)
+* [Query transactions from the AITD Ledger history](#gettransaction)
 * [Sign](#sign) transactions securely without connecting to any server
-* [Submit](#submit) transactions to the XRP Ledger, including [Payments](#payment), [Orders](#order), [Settings changes](#settings), and [other types](#transaction-types)
-* [Generate a new XRP Ledger Address](#generateaddress)
+* [Submit](#submit) transactions to the AITD Ledger, including [Payments](#payment), [Orders](#order), [Settings changes](#settings), and [other types](#transaction-types)
+* [Generate a new AITD Ledger Address](#generateaddress)
 * ... and [much more](#api-methods).
 
-This page contains documentation for ripple-lib. To use ripple-lib with npm/yarn, begin with the [Getting Started](https://github.com/ripple/ripple-lib#getting-started) steps.
+This page contains documentation for aitd-lib. To use aitd-lib with npm/yarn, begin with the [Getting Started](https://github.com/aitd/aitd-lib#getting-started) steps.
 
-**What is ripple-lib used for?** Here's a [list of applications that use `ripple-lib`](https://github.com/ripple/ripple-lib/blob/develop/APPLICATIONS.md). Open a PR to add your app or project to the list!
+**What is aitd-lib used for?** Here's a [list of applications that use `aitd-lib`](https://github.com/aitd/aitd-lib/blob/develop/APPLICATIONS.md). Open a PR to add your app or project to the list!
 
 ## Boilerplate
 
-Use the following [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code) to wrap your custom code using RippleAPI.
+Use the following [boilerplate code](https://en.wikipedia.org/wiki/Boilerplate_code) to wrap your custom code using AitdAPI.
 
 ```javascript
-const RippleAPI = require('ripple-lib').RippleAPI;
+const AitdAPI = require('aitd-lib').AitdAPI;
 
-const api = new RippleAPI({
-  server: 'wss://s1.ripple.com' // Public rippled server hosted by Ripple, Inc.
+const api = new AitdAPI({
+  server: 'wss://s1.aitd.com' // Public aitdd server hosted by Aitd, Inc.
 });
 api.on('error', (errorCode, errorMessage) => {
   console.log(errorCode + ': ' + errorMessage);
@@ -150,9 +150,9 @@ api.connect().then(() => {
 }).catch(console.error);
 ```
 
-RippleAPI is designed to work in [Node.js](https://nodejs.org) version 6 or higher. Ripple recommends Node.js v10 LTS.
+AitdAPI is designed to work in [Node.js](https://nodejs.org) version 6 or higher. Aitd recommends Node.js v10 LTS.
 
-The code samples in this documentation are written with ECMAScript 6 (ES6) features, but `RippleAPI` also works with ECMAScript 5 (ES5). Regardless of whether you use ES5 or ES6, the methods that return Promises return [ES6-style promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+The code samples in this documentation are written with ECMAScript 6 (ES6) features, but `AitdAPI` also works with ECMAScript 5 (ES5). Regardless of whether you use ES5 or ES6, the methods that return Promises return [ES6-style promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 <aside class="notice">
 All the code snippets in this documentation assume that you have surrounded them with this boilerplate.
@@ -168,50 +168,50 @@ The "error" event is emitted whenever an error occurs that cannot be associated 
 
 ### Parameters
 
-The RippleAPI constructor optionally takes one argument, an object with the following options:
+The AitdAPI constructor optionally takes one argument, an object with the following options:
 
 Name | Type | Description
 ---- | ---- | -----------
-authorization | string | *Optional* Username and password for HTTP basic authentication to the rippled server in the format **username:password**.
+authorization | string | *Optional* Username and password for HTTP basic authentication to the aitdd server in the format **username:password**.
 certificate | string | *Optional* A string containing the certificate key of the client in PEM format. (Can be an array of certificates).
 feeCushion | number | *Optional* Factor to multiply estimated fee by to provide a cushion in case the required fee rises during submission of a transaction. Defaults to `1.2`.
 key | string | *Optional* A string containing the private key of the client in PEM format. (Can be an array of keys).
-maxFeeXRP | string | *Optional* Maximum fee to use with transactions, in XRP. Must be a string-encoded number. Defaults to `'2'`.
+maxFeeAITD | string | *Optional* Maximum fee to use with transactions, in AITD. Must be a string-encoded number. Defaults to `'2'`.
 passphrase | string | *Optional* The passphrase for the private key of the client.
-proxy | uri string | *Optional* URI for HTTP/HTTPS proxy to use to connect to the rippled server.
+proxy | uri string | *Optional* URI for HTTP/HTTPS proxy to use to connect to the aitdd server.
 proxyAuthorization | string | *Optional* Username and password for HTTP basic authentication to the proxy in the format **username:password**.
-server | uri string | *Optional* URI for rippled websocket port to connect to. Must start with `wss://`, `ws://`, `wss+unix://`, or `ws+unix://`.
+server | uri string | *Optional* URI for aitdd websocket port to connect to. Must start with `wss://`, `ws://`, `wss+unix://`, or `ws+unix://`.
 timeout | integer | *Optional* Timeout in milliseconds before considering a request to have failed.
-trace | boolean | *Optional* If true, log rippled requests and responses to stdout.
+trace | boolean | *Optional* If true, log aitdd requests and responses to stdout.
 trustedCertificates | array\<string\> | *Optional* Array of PEM-formatted SSL certificates to trust when connecting to a proxy. This is useful if you want to use a self-signed certificate on the proxy server. Note: Each element must contain a single certificate; concatenated certificates are not valid.
 
-If you omit the `server` parameter, RippleAPI operates [offline](#offline-functionality).
+If you omit the `server` parameter, AitdAPI operates [offline](#offline-functionality).
 
 
 ### Installation ###
 
 1. Install [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com/en/docs/install). Most Linux distros have a package for Node.js; check that it's the version you want.
-2. Use yarn to install RippleAPI:
-      `yarn add ripple-lib`
+2. Use yarn to install AitdAPI:
+      `yarn add aitd-lib`
 
-After you have installed ripple-lib, you can create scripts using the [boilerplate](#boilerplate) and run them using the Node.js executable, typically named `node`:
+After you have installed aitd-lib, you can create scripts using the [boilerplate](#boilerplate) and run them using the Node.js executable, typically named `node`:
 
       `node script.js`
 
 ## Offline functionality
 
-RippleAPI can also function without internet connectivity. This can be useful in order to generate secrets and sign transactions from a secure, isolated machine.
+AitdAPI can also function without internet connectivity. This can be useful in order to generate secrets and sign transactions from a secure, isolated machine.
 
-To instantiate RippleAPI in offline mode, use the following boilerplate code:
+To instantiate AitdAPI in offline mode, use the following boilerplate code:
 
 ```javascript
-const RippleAPI = require('ripple-lib').RippleAPI;
+const AitdAPI = require('aitd-lib').AitdAPI;
 
-const api = new RippleAPI();
+const api = new AitdAPI();
 /* insert code here */
 ```
 
-Methods that depend on the state of the XRP Ledger are unavailable in offline mode. To prepare transactions offline, you **must** specify  the `fee`, `sequence`, and `maxLedgerVersion` parameters in the [transaction instructions](#transaction-instructions). You can use the following methods while offline:
+Methods that depend on the state of the AITD Ledger are unavailable in offline mode. To prepare transactions offline, you **must** specify  the `fee`, `sequence`, and `maxLedgerVersion` parameters in the [transaction instructions](#transaction-instructions). You can use the following methods while offline:
 
 * [preparePayment](#preparepayment)
 * [prepareTrustline](#preparetrustline)
@@ -238,7 +238,7 @@ Methods that depend on the state of the XRP Ledger are unavailable in offline mo
 "X7AcgcsBL6XDcUb289X4mJ8djcdyKaB5hJDWMArnXr61cqZ"
 ```
 
-An *address* refers to a specific XRP Ledger account. It is a base-58 encoding of a hash of the account's public key. There are two kinds of addresses in common use:
+An *address* refers to a specific AITD Ledger account. It is a base-58 encoding of a hash of the account's public key. There are two kinds of addresses in common use:
 
 ### Classic Address
 
@@ -246,22 +246,22 @@ A *classic address* encodes a hash of the account's public key and a checksum. I
 
 ### X-address
 
-An *X-address* encodes a hash of the account's public key, a tag, and a checksum. This kind of address starts with the uppercase letter `X` if it is intended for use on the production XRP Ledger (mainnet). It starts with the uppercase letter `T` if it is intended for use on a test network such as Testnet or Devnet.
+An *X-address* encodes a hash of the account's public key, a tag, and a checksum. This kind of address starts with the uppercase letter `X` if it is intended for use on the production AITD Ledger (mainnet). It starts with the uppercase letter `T` if it is intended for use on a test network such as Testnet or Devnet.
 
 ## Account Sequence Number
 
-Every XRP Ledger account has a *sequence number* that is used to keep transactions in order. Every transaction must have a sequence or a ticketSequence number. A transaction can only be executed if it has the next sequence number in order, of the account sending it, or uses a previously generated ticketSequence number. This prevents one transaction from executing twice and transactions executing out of order. The sequence number starts at `1` and increments for each transaction that the account makes.
+Every AITD Ledger account has a *sequence number* that is used to keep transactions in order. Every transaction must have a sequence or a ticketSequence number. A transaction can only be executed if it has the next sequence number in order, of the account sending it, or uses a previously generated ticketSequence number. This prevents one transaction from executing twice and transactions executing out of order. The sequence number starts at `1` and increments for each transaction that the account makes.
 
 ## Currency
 
-Currencies are represented as either 3-character currency codes or 40-character uppercase hexadecimal strings. We recommend using uppercase [ISO 4217 Currency Codes](http://www.xe.com/iso4217.php) only. The string "XRP" is disallowed on trustlines because it is reserved for the XRP Ledger's native currency. The following characters are permitted: all uppercase and lowercase letters, digits, as well as the symbols `?`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `<`, `>`, `(`, `)`, `{`, `}`, `[`, `]`, and `|`.
+Currencies are represented as either 3-character currency codes or 40-character uppercase hexadecimal strings. We recommend using uppercase [ISO 4217 Currency Codes](http://www.xe.com/iso4217.php) only. The string "AITD" is disallowed on trustlines because it is reserved for the AITD Ledger's native currency. The following characters are permitted: all uppercase and lowercase letters, digits, as well as the symbols `?`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `<`, `>`, `(`, `)`, `{`, `}`, `[`, `]`, and `|`.
 
 ## Value
-A *value* is a quantity of a currency represented as a decimal string. Be careful: JavaScript's native number format does not have sufficient precision to represent all values. XRP has different precision from other currencies.
+A *value* is a quantity of a currency represented as a decimal string. Be careful: JavaScript's native number format does not have sufficient precision to represent all values. AITD has different precision from other currencies.
 
-**XRP** has 6 significant digits past the decimal point. In other words, XRP cannot be divided into positive values smaller than `0.000001` (1e-6). This smallest unit is called a "drop". XRP has a maximum value of `100000000000` (1e11). Some RippleAPI methods accept XRP in order to maintain compatibility with older versions of the API. For consistency with the `rippled` APIs, we recommend formally specifying XRP values in *drops* in all API requests, and converting them to XRP for display. This is similar to Bitcoin's *satoshis* and Ethereum's *wei*. 1 XRP = 1,000,000 drops.
+**AITD** has 6 significant digits past the decimal point. In other words, AITD cannot be divided into positive values smaller than `0.000001` (1e-6). This smallest unit is called a "drop". AITD has a maximum value of `100000000000` (1e11). Some AitdAPI methods accept AITD in order to maintain compatibility with older versions of the API. For consistency with the `aitdd` APIs, we recommend formally specifying AITD values in *drops* in all API requests, and converting them to AITD for display. This is similar to Bitcoin's *satoshis* and Ethereum's *wei*. 1 AITD = 1,000,000 drops.
 
-**Non-XRP values** have 16 decimal digits of precision, with a maximum value of `9999999999999999e80`. The smallest positive non-XRP value is `1e-81`.
+**Non-AITD values** have 16 decimal digits of precision, with a maximum value of `9999999999999999e80`. The smallest positive non-AITD value is `1e-81`.
 
 ## Amount
 
@@ -275,16 +275,16 @@ Example 100.00 USD amount:
 }
 ```
 
-Example 3.0 XRP amount, in drops:
+Example 3.0 AITD amount, in drops:
 ```json
 {
   "currency": "drops",
   "value": "3000000"
 }
 ```
-(Requires `ripple-lib` version 1.0.0 or higher.)
+(Requires `aitd-lib` version 1.0.0 or higher.)
 
-An *amount* is an object specifying a currency, a quantity of that currency, and the counterparty (issuer) on the trustline that holds the value. For XRP, there is no counterparty.
+An *amount* is an object specifying a currency, a quantity of that currency, and the counterparty (issuer) on the trustline that holds the value. For AITD, there is no counterparty.
 
 A *lax amount* allows the counterparty to be omitted for all currencies. If the counterparty is not specified in an amount within a transaction specification, then any counterparty may be used for that amount.
 
@@ -294,8 +294,8 @@ A *balance* is an amount than can have a negative value.
 
 Name | Type | Description
 ---- | ---- | -----------
-currency | [currency](#currency) | The three-character code or hexadecimal string used to denote currencies, or "drops" for the smallest unit of XRP.
-counterparty | [address](#address) | *Optional* The XRP Ledger address of the account that owes or is owed the funds (omitted if `currency` is "XRP" or "drops")
+currency | [currency](#currency) | The three-character code or hexadecimal string used to denote currencies, or "drops" for the smallest unit of AITD.
+counterparty | [address](#address) | *Optional* The AITD Ledger address of the account that owes or is owed the funds (omitted if `currency` is "AITD" or "drops")
 value | [value](#value) | *Optional* The quantity of the currency, denoted as a string to retain floating point precision
 
 # Transaction Overview
@@ -306,25 +306,25 @@ A transaction type is specified by the strings in the first column in the table 
 
 Type | Description
 ---- | -----------
-[payment](#payment) | A `payment` transaction represents a transfer of value from one account to another. Depending on the [path](https://ripple.com/build/paths/) taken, additional exchanges of value may occur atomically to facilitate the payment.
-[order](#order) | An `order` transaction creates a limit order. It defines an intent to exchange currencies, and creates an order in the XRP Ledger's order book if not completely fulfilled when placed. Orders can be partially fulfilled.
-[orderCancellation](#order-cancellation) | An `orderCancellation` transaction cancels an order in the XRP Ledger's order book.
+[payment](#payment) | A `payment` transaction represents a transfer of value from one account to another. Depending on the [path](https://aitd.com/build/paths/) taken, additional exchanges of value may occur atomically to facilitate the payment.
+[order](#order) | An `order` transaction creates a limit order. It defines an intent to exchange currencies, and creates an order in the AITD Ledger's order book if not completely fulfilled when placed. Orders can be partially fulfilled.
+[orderCancellation](#order-cancellation) | An `orderCancellation` transaction cancels an order in the AITD Ledger's order book.
 [trustline](#trustline) | A `trustline` transactions creates or modifies a trust line between two accounts.
-[settings](#settings) | A `settings` transaction modifies the settings of an account in the XRP Ledger.
-[escrowCreation](#escrow-creation) | An `escrowCreation` transaction creates an escrow on the ledger, which locks XRP until a cryptographic condition is met or it expires. It is like an escrow service where the XRP Ledger acts as the escrow agent.
+[settings](#settings) | A `settings` transaction modifies the settings of an account in the AITD Ledger.
+[escrowCreation](#escrow-creation) | An `escrowCreation` transaction creates an escrow on the ledger, which locks AITD until a cryptographic condition is met or it expires. It is like an escrow service where the AITD Ledger acts as the escrow agent.
 [escrowCancellation](#escrow-cancellation) | An `escrowCancellation` transaction unlocks the funds in an escrow and sends them back to the creator of the escrow, but it will only work after the escrow expires.
 [escrowExecution](#escrow-execution) | An `escrowExecution` transaction unlocks the funds in an escrow and sends them to the destination of the escrow, but it will only work if the cryptographic condition is provided.
 [checkCreate](#check-create) | A `checkCreate` transaction creates a check on the ledger, which is a deferred payment that can be cashed by its intended destination.
 [checkCancel](#check-cancel) | A `checkCancel` transaction cancels an unredeemed Check, removing it from the ledger without sending any money.
 [checkCash](#check-cash) | A `checkCash` transaction redeems a Check to receive up to the amount authorized by the corresponding `checkCreate` transaction. Only the `destination` address of a Check can cash it.
-[paymentChannelCreate](#payment-channel-create) | A `paymentChannelCreate` transaction opens a payment channel between two addresses with XRP set aside for asynchronous payments.
-[paymentChannelFund](#payment-channel-fund) | A `paymentChannelFund` transaction adds XRP to a payment channel and optionally sets a new expiration for the channel.
-[paymentChannelClaim](#payment-channel-claim) | A `paymentChannelClaim` transaction withdraws XRP from a channel and optionally requests to close it.
+[paymentChannelCreate](#payment-channel-create) | A `paymentChannelCreate` transaction opens a payment channel between two addresses with AITD set aside for asynchronous payments.
+[paymentChannelFund](#payment-channel-fund) | A `paymentChannelFund` transaction adds AITD to a payment channel and optionally sets a new expiration for the channel.
+[paymentChannelClaim](#payment-channel-claim) | A `paymentChannelClaim` transaction withdraws AITD from a channel and optionally requests to close it.
 [ticketCreate](#ticket-create) | A successful `ticketCreate` transaction adds a Ticket in the directory of the owning account.
 
 ## Transaction Flow
 
-Executing a transaction with `RippleAPI` requires the following four steps:
+Executing a transaction with `AitdAPI` requires the following four steps:
 
 1. Prepare - Create an unsigned transaction based on a [specification](#transaction-specifications) and [instructions](#transaction-instructions). There is a method to prepare each type of transaction:
     * [preparePayment](#preparepayment)
@@ -345,11 +345,11 @@ Executing a transaction with `RippleAPI` requires the following four steps:
 
 ## Transaction Fees
 
-Every transaction must destroy a small amount of XRP as a cost to apply the transaction to the ledger. This is also called a *transaction fee*. The transaction cost is designed to increase along with the load on the XRP Ledger, making it very expensive to deliberately or inadvertently overload the peer-to-peer network that powers the XRP Ledger.
+Every transaction must destroy a small amount of AITD as a cost to apply the transaction to the ledger. This is also called a *transaction fee*. The transaction cost is designed to increase along with the load on the AITD Ledger, making it very expensive to deliberately or inadvertently overload the peer-to-peer network that powers the AITD Ledger.
 
 You can choose the size of the fee you want to pay or let a default be used. You can get an estimate of the fee required to be included in the next ledger closing with the [getFee](#getfee) method.
 
-For a multi-signed transaction, ripple-lib automatically multiplies the `fee` by (1 + Number of Signatures Provided). For example, if you set `instructions.fee = '0.000020'` and `instructions.signersCount = 2`, the prepared transaction's `Fee` will be 20 drops × (1 + 2 Signatures) = 60 drops. See [Transaction Cost](https://developers.ripple.com/transaction-cost.html).
+For a multi-signed transaction, aitd-lib automatically multiplies the `fee` by (1 + Number of Signatures Provided). For example, if you set `instructions.fee = '0.000020'` and `instructions.signersCount = 2`, the prepared transaction's `Fee` will be 20 drops × (1 + 2 Signatures) = 60 drops. See [Transaction Cost](https://developers.aitd.com/transaction-cost.html).
 
 ## Transaction Instructions
 
@@ -358,7 +358,7 @@ Transaction instructions indicate how to execute a transaction, complementary wi
 Name | Type | Description
 ---- | ---- | -----------
 fee | [value](#value) | *Optional* An exact fee to pay for the transaction, before multiplying for multi-signed transactions. See [Transaction Fees](#transaction-fees) for more information.
-maxFee | [value](#value) | *Optional* Deprecated: Use `maxFeeXRP` in the RippleAPI constructor instead. The maximum fee to pay for this transaction. If this exceeds `maxFeeXRP`, `maxFeeXRP` will be used instead. See [Transaction Fees](#transaction-fees) for more information.
+maxFee | [value](#value) | *Optional* Deprecated: Use `maxFeeAITD` in the AitdAPI constructor instead. The maximum fee to pay for this transaction. If this exceeds `maxFeeAITD`, `maxFeeAITD` will be used instead. See [Transaction Fees](#transaction-fees) for more information.
 maxLedgerVersion | integer,null | *Optional* The highest ledger version that the transaction can be included in. If this option and `maxLedgerVersionOffset` are both omitted, the `maxLedgerVersion` option will default to 3 greater than the current validated ledger version (equivalent to `maxLedgerVersionOffset=3`). Use `null` to not set a maximum ledger version. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
 maxLedgerVersion | string,null | *Optional* The highest ledger version that the transaction can be included in. If this option and `maxLedgerVersionOffset` are both omitted, the `maxLedgerVersion` option will default to 3 greater than the current validated ledger version (equivalent to `maxLedgerVersionOffset=3`). Use `null` to not set a maximum ledger version. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
 maxLedgerVersionOffset | integer | *Optional* Offset from current validated ledger version to highest ledger version that the transaction can be included in.
@@ -366,7 +366,7 @@ sequence | [sequence](#account-sequence-number) | *Optional* The initiating acco
 signersCount | integer | *Optional* Number of signers that will be signing this transaction.
 ticketSequence | [ticket-sequence](#account-sequence-number) | *Optional* The ticket sequence to be used for this transaction. `sequence` and `ticketSequence` are mutually exclusive, only one of them can be set.
 
-We recommend that you specify a `maxLedgerVersion` so that you can quickly determine that a failed transaction will never succeed in the future. It is impossible for a transaction to succeed after the XRP Ledger's consensus-validated ledger version exceeds the transaction's `maxLedgerVersion`. If you omit `maxLedgerVersion`, the "prepare\*" method automatically supplies a `maxLedgerVersion` equal to the current ledger plus 3, which it includes in the return value from the "prepare\*" method.
+We recommend that you specify a `maxLedgerVersion` so that you can quickly determine that a failed transaction will never succeed in the future. It is impossible for a transaction to succeed after the AITD Ledger's consensus-validated ledger version exceeds the transaction's `maxLedgerVersion`. If you omit `maxLedgerVersion`, the "prepare\*" method automatically supplies a `maxLedgerVersion` equal to the current ledger plus 3, which it includes in the return value from the "prepare\*" method.
 
 ## Transaction ID
 
@@ -412,7 +412,7 @@ allowPartialPayment | boolean | *Optional* If true, this payment should proceed 
 invoiceID | string | *Optional* A 256-bit hash that can be used to identify a particular payment.
 limitQuality | boolean | *Optional* Only take paths where all the conversions have an input:output ratio that is equal or better than the ratio of destination.amount:source.maxAmount.
 memos | [memos](#transaction-memos) | *Optional* Array of memos to attach to the transaction.
-noDirectRipple | boolean | *Optional* If true and paths are specified, the sender would like the XRP Ledger to disregard any direct paths from the source account to the destination account. This may be used to take advantage of an arbitrage opportunity or by gateways wishing to issue balances from a hot wallet to a user who has mistakenly set a trustline directly to the hot wallet.
+noDirectAitd | boolean | *Optional* If true and paths are specified, the sender would like the AITD Ledger to disregard any direct paths from the source account to the destination account. This may be used to take advantage of an arbitrage opportunity or by gateways wishing to issue balances from a hot wallet to a user who has mistakenly set a trustline directly to the hot wallet.
 paths | string | *Optional* The paths of trustlines and orders to use in executing the payment.
 
 ### Example
@@ -454,7 +454,7 @@ frozen | boolean | *Optional* If true, the trustline is frozen, which means that
 memos | [memos](#transaction-memos) | *Optional* Array of memos to attach to the transaction.
 qualityIn | number | *Optional* Incoming balances on this trustline are valued at this ratio.
 qualityOut | number | *Optional* Outgoing balances on this trustline are valued at this ratio.
-ripplingDisabled | boolean | *Optional* If true, payments cannot ripple through this trustline.
+ripplingDisabled | boolean | *Optional* If true, payments cannot aitd through this trustline.
 
 ### Example
 
@@ -543,16 +543,16 @@ See [Transaction Types](#transaction-types) for a description.
 
 Name | Type | Description
 ---- | ---- | -----------
-defaultRipple | boolean | *Optional* Enable [rippling](https://ripple.com/build/understanding-the-noripple-flag/) on this account’s trust lines by default. (New in [rippled 0.27.3](https://github.com/ripple/rippled/releases/tag/0.27.3))
-depositAuth | boolean | *Optional* Enable [Deposit Authorization](https://ripple.com/build/deposit-authorization/) on this account. If set, transactions cannot send value of any kind to this account unless the sender of those transactions is the account itself. (Requires the [DepositAuth amendment](https://ripple.com/build/known-amendments/#depositauth))
-disableMasterKey | boolean | *Optional* Disallows use of the master key to sign transactions for this account. To disable the master key, you must authorize the transaction by signing it with the master key pair. You cannot use a regular key pair or a multi-signature. You can re-enable the master key pair using a regular key pair or multi-signature. See [AccountSet](https://developers.ripple.com/accountset.html).
-disallowIncomingXRP | boolean | *Optional* Indicates that client applications should not send XRP to this account. Not enforced by rippled.
+defaultAitd | boolean | *Optional* Enable [rippling](https://aitd.com/build/understanding-the-noaitd-flag/) on this account’s trust lines by default. (New in [aitdd 0.27.3](https://github.com/aitd/aitdd/releases/tag/0.27.3))
+depositAuth | boolean | *Optional* Enable [Deposit Authorization](https://aitd.com/build/deposit-authorization/) on this account. If set, transactions cannot send value of any kind to this account unless the sender of those transactions is the account itself. (Requires the [DepositAuth amendment](https://aitd.com/build/known-amendments/#depositauth))
+disableMasterKey | boolean | *Optional* Disallows use of the master key to sign transactions for this account. To disable the master key, you must authorize the transaction by signing it with the master key pair. You cannot use a regular key pair or a multi-signature. You can re-enable the master key pair using a regular key pair or multi-signature. See [AccountSet](https://developers.aitd.com/accountset.html).
+disallowIncomingAITD | boolean | *Optional* Indicates that client applications should not send AITD to this account. Not enforced by aitdd.
 domain | string | *Optional* The domain that owns this account, as a hexadecimal string representing the ASCII for the domain in lowercase.
 emailHash | string,null | *Optional* Hash of an email address to be used for generating an avatar image. Conventionally, clients use Gravatar to display this image. Use `null` to clear.
 enableTransactionIDTracking | boolean | *Optional* Track the ID of this account’s most recent transaction.
 globalFreeze | boolean | *Optional* Freeze all assets issued by this account.
 memos | [memos](#transaction-memos) | *Optional* Array of memos to attach to the transaction.
-messageKey | string | *Optional* Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
+messageKey | string | *Optional* Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Aitd.
 noFreeze | boolean | *Optional* Permanently give up the ability to freeze individual trust lines. This flag can never be disabled after being enabled.
 passwordSpent | boolean | *Optional* Indicates that the account has used its free SetRegularKey transaction.
 regularKey | [address](#address),null | *Optional* The public key of a new keypair, to use as the regular key to this account, as a base-58-encoded string in the same format as an account address. Use `null` to remove the regular key.
@@ -562,7 +562,7 @@ signers | object | *Optional* Settings that determine what sets of accounts can 
 *signers.* threshold | integer | A target number for the signer weights. A multi-signature from this list is valid only if the sum weights of the signatures provided is equal or greater than this value. To delete the signers setting, use the value `0`.
 *signers.* weights | array | *Optional* Weights of signatures for each signer.
 *signers.* weights[] | object | An association of an address and a weight.
-*signers.weights[].* address | [address](#address) | An account address on the XRP Ledger
+*signers.weights[].* address | [address](#address) | An account address on the AITD Ledger
 *signers.weights[].* weight | integer | The weight that the signature of this account counts as towards the threshold.
 tickSize | string | *Optional* Tick size to use for offers involving a currency issued by this address. The exchange rates of those offers is rounded to this many significant digits. Valid values are 3 to 15 inclusive, or 0 to disable.
 transferRate | number,null | *Optional* The fee to charge when users transfer this account’s issuances, as the decimal amount that must be sent to deliver 1 unit. Has precision up to 9 digits beyond the decimal point. Use `null` to set no fee.
@@ -573,7 +573,7 @@ walletLocator | string,null | *Optional* Transaction hash or any other 64 charac
 
 ```json
 {
-  "domain": "ripple.com",
+  "domain": "aitd.com",
   "memos": [
     {
       "type": "test",
@@ -591,8 +591,8 @@ See [Transaction Types](#transaction-types) for a description.
 
 Name | Type | Description
 ---- | ---- | -----------
-amount | [value](#value) | Amount of XRP for sender to escrow.
-destination | [address](#address) | Address to receive escrowed XRP.
+amount | [value](#value) | Amount of AITD for sender to escrow.
+destination | [address](#address) | Address to receive escrowed AITD.
 allowCancelAfter | date-time string | *Optional* If present, the escrow may be cancelled after this time.
 allowExecuteAfter | date-time string | *Optional* If present, the escrow can not be executed before this time.
 condition | string | *Optional* A hex value representing a [PREIMAGE-SHA-256 crypto-condition](https://tools.ietf.org/html/draft-thomas-crypto-conditions-02#section-8.1). If present, `fulfillment` is required upon execution.
@@ -666,7 +666,7 @@ See [Transaction Types](#transaction-types) for a description.
 Name | Type | Description
 ---- | ---- | -----------
 destination | [address](#address) | Address of the account that can cash the check.
-sendMax | [laxAmount](#amount) | Amount of source currency the check is allowed to debit the sender, including transfer fees on non-XRP currencies.
+sendMax | [laxAmount](#amount) | Amount of source currency the check is allowed to debit the sender, including transfer fees on non-AITD currencies.
 destinationTag | integer | *Optional* Destination tag that identifies the reason for the check, or a hosted recipient to pay.
 expiration | date-time string | *Optional* Time after which the check is no longer valid.
 invoiceID | string | *Optional* 256-bit hash, as a 64-character hexadecimal string, representing a specific reason or identifier for this check.
@@ -733,9 +733,9 @@ See [Transaction Types](#transaction-types) for a description.
 
 Name | Type | Description
 ---- | ---- | -----------
-amount | [value](#value) | Amount of XRP for sender to set aside in this channel.
-destination | [address](#address) | Address to receive XRP claims against this channel.
-settleDelay | number | Amount of seconds the source address must wait before closing the channel if it has unclaimed XRP.
+amount | [value](#value) | Amount of AITD for sender to set aside in this channel.
+destination | [address](#address) | Address to receive AITD claims against this channel.
+settleDelay | number | Amount of seconds the source address must wait before closing the channel if it has unclaimed AITD.
 publicKey | string | Public key of the key pair the source may use to sign claims against this channel.
 cancelAfter | date-time string | *Optional* Time when this channel expires. This expiration cannot be changed after creating the channel.
 destinationTag | integer | *Optional* Destination tag.
@@ -760,7 +760,7 @@ See [Transaction Types](#transaction-types) for a description.
 
 Name | Type | Description
 ---- | ---- | -----------
-amount | [value](#value) | Amount of XRP to fund the channel with.
+amount | [value](#value) | Amount of AITD to fund the channel with.
 channel | string | 256-bit hexadecimal channel identifier.
 expiration | date-time string | *Optional* New expiration for this channel. (This does not change the cancelAfter expiration, if the channel has one.) Cannot move the expiration sooner than settleDelay seconds from time of the request.
 
@@ -782,12 +782,12 @@ See [Transaction Types](#transaction-types) for a description.
 Name | Type | Description
 ---- | ---- | -----------
 channel | string | 256-bit hexadecimal channel identifier.
-amount | [value](#value) | *Optional* Amount of XRP authorized by this signature.
-balance | [value](#value) | *Optional* Total XRP balance delivered by this channel after claim is processed.
-close | boolean | *Optional* Request to close the channel. If the channel has no XRP remaining or the destination address requests it, closes the channel immediately (returning unclaimed XRP to the source address). Otherwise, sets the channel to expire after settleDelay seconds have passed.
+amount | [value](#value) | *Optional* Amount of AITD authorized by this signature.
+balance | [value](#value) | *Optional* Total AITD balance delivered by this channel after claim is processed.
+close | boolean | *Optional* Request to close the channel. If the channel has no AITD remaining or the destination address requests it, closes the channel immediately (returning unclaimed AITD to the source address). Otherwise, sets the channel to expire after settleDelay seconds have passed.
 publicKey | string | *Optional* Public key of the channel. (For verifying the signature.)
 renew | boolean | *Optional* Clear the channel's expiration time.
-signature | string | *Optional* Signed claim authorizing withdrawal of XRP from the channel. (Required except from the channel's source address.)
+signature | string | *Optional* Signed claim authorizing withdrawal of AITD from the channel. (Required except from the channel's source address.)
 
 ### Example
 
@@ -799,48 +799,48 @@ signature | string | *Optional* Signed claim authorizing withdrawal of XRP from 
 ```
 
 
-# rippled APIs
+# aitdd APIs
 
-ripple-lib relies on [rippled APIs](https://ripple.com/build/rippled-apis/) for online functionality. In addition to ripple-lib's own methods, you can also access rippled APIs through ripple-lib. Use the `request()`, `hasNextPage()`, and `requestNextPage()` methods:
+aitd-lib relies on [aitdd APIs](https://aitd.com/build/aitdd-apis/) for online functionality. In addition to aitd-lib's own methods, you can also access aitdd APIs through aitd-lib. Use the `request()`, `hasNextPage()`, and `requestNextPage()` methods:
 
-* Use `request()` to issue any `rippled` command, including `account_currencies`, `subscribe`, and `unsubscribe`. [Full list of API Methods](https://ripple.com/build/rippled-apis/#api-methods).
-* Use `hasNextPage()` to determine whether a response has more pages. This is true when the response includes a [`marker` field](https://ripple.com/build/rippled-apis/#markers-and-pagination).
+* Use `request()` to issue any `aitdd` command, including `account_currencies`, `subscribe`, and `unsubscribe`. [Full list of API Methods](https://aitd.com/build/aitdd-apis/#api-methods).
+* Use `hasNextPage()` to determine whether a response has more pages. This is true when the response includes a [`marker` field](https://aitd.com/build/aitdd-apis/#markers-and-pagination).
 * Use `requestNextPage()` to request the next page of data.
 
-When using rippled APIs:
+When using aitdd APIs:
 
-* [Specify XRP amounts in drops](https://developers.ripple.com/basic-data-types.html#specifying-currency-amounts).
-* [Specify timestamps as the number of seconds since the "Ripple Epoch"](https://developers.ripple.com/basic-data-types.html#specifying-time).
+* [Specify AITD amounts in drops](https://developers.aitd.com/basic-data-types.html#specifying-currency-amounts).
+* [Specify timestamps as the number of seconds since the "Aitd Epoch"](https://developers.aitd.com/basic-data-types.html#specifying-time).
 * Instead of `counterparty`, use `issuer`.
 
 ## Listening to streams
 
-The `rippled` server can push updates to your client when various events happen. Refer to [Subscriptions in the `rippled` API docs](https://developers.ripple.com/subscription-methods.html) for details.
+The `aitdd` server can push updates to your client when various events happen. Refer to [Subscriptions in the `aitdd` API docs](https://developers.aitd.com/subscription-methods.html) for details.
 
 Note that the `streams` parameter for generic streams takes an array. For example, to subscribe to the `validations` stream, use `{ streams: [ 'validations' ] }`.
 
-The string names of some generic streams to subscribe to are in the table below. (Refer to `rippled` for an up-to-date list of streams.)
+The string names of some generic streams to subscribe to are in the table below. (Refer to `aitdd` for an up-to-date list of streams.)
 
 Type | Description
 ---- | -----------
-`server` | Sends a message whenever the status of the `rippled` server (for example, network connectivity) changes.
+`server` | Sends a message whenever the status of the `aitdd` server (for example, network connectivity) changes.
 `ledger` | Sends a message whenever the consensus process declares a new validated ledger.
 `transactions` | Sends a message whenever a transaction is included in a closed ledger.
 `transactions_proposed` | Sends a message whenever a transaction is included in a closed ledger, as well as some transactions that have not yet been included in a validated ledger and may never be. Not all proposed transactions appear before validation. Even some transactions that don't succeed are included in validated ledgers because they take the anti-spam transaction fee.
 `validations` | Sends a message whenever the server receives a validation message, also called a validation vote, regardless of whether the server trusts the validator.
 `manifests` | Sends a message whenever the server receives a manifest.
-`peer_status` | (Admin-only) Information about connected peer `rippled` servers, especially with regards to the consensus process.
+`peer_status` | (Admin-only) Information about connected peer `aitdd` servers, especially with regards to the consensus process.
 
-When you subscribe to a stream, you must also listen to the relevant message type(s). Some of the available message types are in the table below. (Refer to `rippled` for an up-to-date list of message types.)
+When you subscribe to a stream, you must also listen to the relevant message type(s). Some of the available message types are in the table below. (Refer to `aitdd` for an up-to-date list of message types.)
 
 Type | Description
 ---- | -----------
 `ledgerClosed` | Sent by the `ledger` stream when the consensus process declares a new fully validated ledger. The message identifies the ledger and provides some information about its contents.
 `validationReceived` | Sent by the `validations` stream when the server receives a validation message, also called a validation vote, regardless of whether the server trusts the validator.
 `manifestReceived` | Sent by the `manifests` stream when the server receives a manifest.
-`transaction` | Sent by many subscriptions including `transactions`, `transactions_proposed`, `accounts`, `accounts_proposed`, and `book` (Order Book). See [Transaction Streams](https://xrpl.org/subscribe.html#transaction-streams) for details.
-`peerStatusChange` | (Admin-only) Reports a large amount of information on the activities of other `rippled` servers to which the server is connected.
-`path_find` | Asynchronous follow-up response to the currently open path\_find request. See [rippled path\_find method](https://xrpl.org/path_find.html) for details.
+`transaction` | Sent by many subscriptions including `transactions`, `transactions_proposed`, `accounts`, `accounts_proposed`, and `book` (Order Book). See [Transaction Streams](https://aitdl.org/subscribe.html#transaction-streams) for details.
+`peerStatusChange` | (Admin-only) Reports a large amount of information on the activities of other `aitdd` servers to which the server is connected.
+`path_find` | Asynchronous follow-up response to the currently open path\_find request. See [aitdd path\_find method](https://aitdl.org/path_find.html) for details.
 
 To register your listener function, use `connection.on(type, handler)`.
 
@@ -868,26 +868,26 @@ api.connect().then(() => {
 
 The subscription ends when you unsubscribe or the WebSocket connection is closed.
 
-For full details, see [rippled Subscriptions](https://ripple.com/build/rippled-apis/#subscriptions).
+For full details, see [aitdd Subscriptions](https://aitd.com/build/aitdd-apis/#subscriptions).
 
 ## request
 
 `request(command: string, options: object): Promise<object>`
 
-Returns the response from invoking the specified command, with the specified options, on the connected rippled server.
+Returns the response from invoking the specified command, with the specified options, on the connected aitdd server.
 
-Refer to [rippled APIs](https://ripple.com/build/rippled-apis/) for commands and options. All XRP amounts must be specified in drops. One drop is equal to 0.000001 XRP. See [Specifying Currency Amounts](https://ripple.com/build/rippled-apis/#specifying-currency-amounts).
+Refer to [aitdd APIs](https://aitd.com/build/aitdd-apis/) for commands and options. All AITD amounts must be specified in drops. One drop is equal to 0.000001 AITD. See [Specifying Currency Amounts](https://aitd.com/build/aitdd-apis/#specifying-currency-amounts).
 
-Most commands return data for the `current` (in-progress, open) ledger by default. Do not rely on this. Always specify a ledger version in your request. In the example below, the 'validated' ledger is requested, which is the most recent ledger that has been validated by the whole network. See [Specifying Ledgers](https://xrpl.org/basic-data-types.html#specifying-ledgers).
+Most commands return data for the `current` (in-progress, open) ledger by default. Do not rely on this. Always specify a ledger version in your request. In the example below, the 'validated' ledger is requested, which is the most recent ledger that has been validated by the whole network. See [Specifying Ledgers](https://aitdl.org/basic-data-types.html#specifying-ledgers).
 
 ### Return Value
 
-This method returns a promise that resolves with the response from rippled.
+This method returns a promise that resolves with the response from aitdd.
 
 ### Example
 
 ```javascript
-// Replace 'ledger' with your desired rippled command
+// Replace 'ledger' with your desired aitdd command
 return api.request('ledger', {
   ledger_index: 'validated'
 }).then(response => {
@@ -932,7 +932,7 @@ Returns `true` when there are more pages available.
 
 When there are more results than contained in the response, the response includes a `marker` field. You can use this convenience method, or check for `marker` yourself.
 
-See [Markers and Pagination](https://ripple.com/build/rippled-apis/#markers-and-pagination).
+See [Markers and Pagination](https://aitd.com/build/aitdd-apis/#markers-and-pagination).
 
 ### Return Value
 
@@ -960,11 +960,11 @@ Requests the next page of data.
 
 You can use this convenience method, or include `currentResponse.marker` in `params` yourself, when using `request`.
 
-See [Markers and Pagination](https://ripple.com/build/rippled-apis/#markers-and-pagination).
+See [Markers and Pagination](https://aitd.com/build/aitdd-apis/#markers-and-pagination).
 
 ### Return Value
 
-This method returns a promise that resolves with the next page of data from rippled.
+This method returns a promise that resolves with the next page of data from aitdd.
 
 If the response does not have a next page, the promise will reject with `new errors.NotFoundError('response does not have a next page')`.
 
@@ -985,7 +985,7 @@ return api.request(command, params).then(response => {
 
 # Static Methods
 
-ripple-lib features a number of static methods that you can access directly on the `RippleAPI` object. The most commonly-used one is `computeBinaryTransactionHash`, described below. For the full list, see the [XRP Ledger Hashes README](https://github.com/ripple/ripple-lib/blob/develop/src/common/hashes/README.md).
+aitd-lib features a number of static methods that you can access directly on the `AitdAPI` object. The most commonly-used one is `computeBinaryTransactionHash`, described below. For the full list, see the [AITD Ledger Hashes README](https://github.com/aitd/aitd-lib/blob/develop/src/common/hashes/README.md).
 
 ## computeBinaryTransactionHash
 
@@ -993,7 +993,7 @@ ripple-lib features a number of static methods that you can access directly on t
 
 Returns the hash (id) of a binary transaction blob.
 
-This is a static method on the `RippleAPI` class.
+This is a static method on the `AitdAPI` class.
 
 ### Parameters
 
@@ -1008,7 +1008,7 @@ This method returns a string representing the transaction's id (hash).
 ```javascript
 const signed_blob = '120000228000000024000B2E5A201B0066374B61400000003B9ACA0068400000000000000C732102356E89059A75438887F9FEE2056A2890DB82A68353BE9C0C0C8F89C0018B37FC74473045022100B3721EEB1ED6DFF29FB8B209E2DE6B54A0A6E44D52D926342F3D334BE98F08640220367A74107AD5DEAEFA3AB2984C161FC23F30B2704BB5CC984358BA262177A4568114F667B0CA50CC7709A220B0561B85E53A48461FA883142B71D8B09B4EE8DAA68FB936C23E3A974713BDAC'
 if (typeof signed_blob === 'string' && signed_blob.match(/^[A-F0-9]+$/)) {
-  const id = RippleAPI.computeBinaryTransactionHash(signed_blob)
+  const id = AitdAPI.computeBinaryTransactionHash(signed_blob)
   console.log('Transaction hash:', id')
 }
 ```
@@ -1023,9 +1023,9 @@ Transaction hash: 80C5E11E1A21A626759D6CB944B33DBAAC66BD704A289C86E330B847904F5C
 
 `renameCounterpartyToIssuer(issue: {currency: string, counterparty: address}): {currency: string, issuer: address}`
 
-Returns an object with the `counterparty` field renamed to `issuer`. This is useful because RippleAPI generally uses the name `counterparty` while the rippled API generally uses the name `issuer`.
+Returns an object with the `counterparty` field renamed to `issuer`. This is useful because AitdAPI generally uses the name `counterparty` while the aitdd API generally uses the name `issuer`.
 
-This is a static method on the `RippleAPI` class.
+This is a static method on the `AitdAPI` class.
 
 ### Parameters
 
@@ -1048,8 +1048,8 @@ const orderbookInfo = {
     "counterparty": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"
   }
 };
-console.log(RippleAPI.renameCounterpartyToIssuer(orderbookInfo.base))
-console.log(RippleAPI.renameCounterpartyToIssuer(orderbookInfo.counter))
+console.log(AitdAPI.renameCounterpartyToIssuer(orderbookInfo.base))
+console.log(AitdAPI.renameCounterpartyToIssuer(orderbookInfo.counter))
 ```
 
 ```
@@ -1063,7 +1063,7 @@ console.log(RippleAPI.renameCounterpartyToIssuer(orderbookInfo.counter))
 
 Returns formatted bids and asks, which make up an orderbook.
 
-This is a static method on the `RippleAPI` class.
+This is a static method on the `AitdAPI` class.
 
 ### Parameters
 
@@ -1105,7 +1105,7 @@ asks[] | object | An order in the order book.
 
 **Raw order data:** The response includes a `data` property containing the raw order data. This may include `owner_funds`, `Flags`, and other fields.
 
-For details, see the rippled method [book_offers](https://ripple.com/build/rippled-apis/#book-offers).
+For details, see the aitdd method [book_offers](https://aitd.com/build/aitdd-apis/#book-offers).
 
 ### Example
 
@@ -1126,15 +1126,15 @@ const address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59';
 return Promise.all(
   [
     this.api.request('book_offers', {
-      taker_gets: RippleAPI.renameCounterpartyToIssuer(orderbookInfo.base),
-      taker_pays: RippleAPI.renameCounterpartyToIssuer(orderbookInfo.counter),
+      taker_gets: AitdAPI.renameCounterpartyToIssuer(orderbookInfo.base),
+      taker_pays: AitdAPI.renameCounterpartyToIssuer(orderbookInfo.counter),
       ledger_index: 'validated',
       limit: 20,
       taker: address
     }),
     this.api.request('book_offers', {
-      taker_gets: RippleAPI.renameCounterpartyToIssuer(orderbookInfo.counter),
-      taker_pays: RippleAPI.renameCounterpartyToIssuer(orderbookInfo.base),
+      taker_gets: AitdAPI.renameCounterpartyToIssuer(orderbookInfo.counter),
+      taker_pays: AitdAPI.renameCounterpartyToIssuer(orderbookInfo.base),
       ledger_index: 'validated',
       limit: 20,
       taker: address
@@ -1143,7 +1143,7 @@ return Promise.all(
 ).then((directOfferResults, reverseOfferResults) => {
   const directOffers = (directOfferResults ? directOfferResults : []).reduce((acc, res) => acc.concat(res.offers), [])
   const reverseOffers = (reverseOfferResults ? reverseOfferResults : []).reduce((acc, res) => acc.concat(res.offers), [])
-  const orderbook = RippleAPI.formatBidsAndAsks(orderbookInfo, [...directOffers, ...reverseOffers]);
+  const orderbook = AitdAPI.formatBidsAndAsks(orderbookInfo, [...directOffers, ...reverseOffers]);
   console.log(JSON.stringify(orderbook, null, 2));
 });
 ```
@@ -1342,7 +1342,7 @@ return Promise.all(
 
 `connect(): Promise<void>`
 
-Tells the RippleAPI instance to connect to its rippled server.
+Tells the AitdAPI instance to connect to its aitdd server.
 
 ### Parameters
 
@@ -1360,7 +1360,7 @@ See [Boilerplate](#boilerplate) for code sample.
 
 `disconnect(): Promise<void>`
 
-Tells the RippleAPI instance to disconnect from its rippled server.
+Tells the AitdAPI instance to disconnect from its aitdd server.
 
 ### Parameters
 
@@ -1378,7 +1378,7 @@ See [Boilerplate](#boilerplate) for code sample
 
 `isConnected(): boolean`
 
-Checks if the RippleAPI instance is connected to its rippled server.
+Checks if the AitdAPI instance is connected to its aitdd server.
 
 ### Parameters
 
@@ -1402,7 +1402,7 @@ true
 
 `getServerInfo(): Promise<object>`
 
-Get status information about the server that the RippleAPI instance is connected to.
+Get status information about the server that the AitdAPI instance is connected to.
 
 ### Parameters
 
@@ -1414,23 +1414,23 @@ This method returns a promise that resolves with an object with the following st
 
 Name | Type | Description
 ---- | ---- | -----------
-buildVersion | string | The version number of the running rippled version.
-completeLedgers | string | Range expression indicating the sequence numbers of the ledger versions the local rippled has in its database. It is possible to be a disjoint sequence, e.g. “2500-5000,32570-7695432”.
-hostID | string | On an admin request, returns the hostname of the server running the rippled instance; otherwise, returns a unique four letter word.
-ioLatencyMs | number | Amount of time spent waiting for I/O operations to be performed, in milliseconds. If this number is not very, very low, then the rippled server is probably having serious load issues.
+buildVersion | string | The version number of the running aitdd version.
+completeLedgers | string | Range expression indicating the sequence numbers of the ledger versions the local aitdd has in its database. It is possible to be a disjoint sequence, e.g. “2500-5000,32570-7695432”.
+hostID | string | On an admin request, returns the hostname of the server running the aitdd instance; otherwise, returns a unique four letter word.
+ioLatencyMs | number | Amount of time spent waiting for I/O operations to be performed, in milliseconds. If this number is not very, very low, then the aitdd server is probably having serious load issues.
 lastClose | object | Information about the last time the server closed a ledger.
 *lastClose.* convergeTimeS | number | The time it took to reach a consensus for the last ledger closing, in seconds.
 *lastClose.* proposers | integer | Number of trusted validators participating in the ledger closing.
 loadFactor | number | The load factor the server is currently enforcing, as a multiplier on the base transaction fee. The load factor is determined by the highest of the individual server’s load factor, cluster’s load factor, and the overall network’s load factor.
-peers | integer | How many other rippled servers the node is currently connected to.
+peers | integer | How many other aitdd servers the node is currently connected to.
 pubkeyNode | string | Public key used to verify this node for internal communications; this key is automatically generated by the server the first time it starts up. (If deleted, the node can just create a new pair of keys.)
-serverState | string | A string indicating to what extent the server is participating in the network. See [Possible Server States](https://developers.ripple.com/rippled-server-states.html) for more details.
+serverState | string | A string indicating to what extent the server is participating in the network. See [Possible Server States](https://developers.aitd.com/aitdd-server-states.html) for more details.
 validatedLedger | object | Information about the fully-validated ledger with the highest sequence number (the most recent).
 *validatedLedger.* age | integer | The time since the ledger was closed, in seconds.
-*validatedLedger.* baseFeeXRP | [value](#value) | Base fee, in XRP. This may be represented in scientific notation such as 1e-05 for 0.00005.
+*validatedLedger.* baseFeeAITD | [value](#value) | Base fee, in AITD. This may be represented in scientific notation such as 1e-05 for 0.00005.
 *validatedLedger.* hash | string | Unique hash for the ledger, as an uppercase hexadecimal string.
-*validatedLedger.* reserveBaseXRP | [value](#value) | Minimum amount of XRP necessary for every account to keep in reserve.
-*validatedLedger.* reserveIncrementXRP | [value](#value) | Amount of XRP added to the account reserve for each object an account is responsible for in the ledger.
+*validatedLedger.* reserveBaseAITD | [value](#value) | Minimum amount of AITD necessary for every account to keep in reserve.
+*validatedLedger.* reserveIncrementAITD | [value](#value) | Amount of AITD added to the account reserve for each object an account is responsible for in the ledger.
 *validatedLedger.* ledgerVersion | integer | Identifying sequence number of this ledger version.
 validationQuorum | number | Minimum number of trusted validations required in order to validate a ledger version. Some circumstances may cause the server to require more validations.
 load | object | *Optional* *(Admin only)* Detailed information about the current load state of the server.
@@ -1461,10 +1461,10 @@ return api.getServerInfo().then(info => {/* ... */});
   "serverState": "full",
   "validatedLedger": {
     "age": 5,
-    "baseFeeXRP": "0.00001",
+    "baseFeeAITD": "0.00001",
     "hash": "4482DEE5362332F54A4036ED57EE1767C9F33CF7CE5A6670355C16CECE381D46",
-    "reserveBaseXRP": "20",
-    "reserveIncrementXRP": "5",
+    "reserveBaseAITD": "20",
+    "reserveIncrementAITD": "5",
     "ledgerVersion": 6595042
   },
   "validationQuorum": 3
@@ -1476,19 +1476,19 @@ return api.getServerInfo().then(info => {/* ... */});
 
 `getFee(): Promise<string>`
 
-Returns the estimated transaction fee for the rippled server the RippleAPI instance is connected to.
+Returns the estimated transaction fee for the aitdd server the AitdAPI instance is connected to.
 
-This will use the [feeCushion parameter](#parameters) provided to the RippleAPI constructor, or the default value of `1.2`.
+This will use the [feeCushion parameter](#parameters) provided to the AitdAPI constructor, or the default value of `1.2`.
 
 ### Parameters
 
 Name | Type | Description
 ---- | ---- | -----------
-cushion | number | *Optional* The fee is the product of the base fee, the `load_factor`, and this cushion. Default is provided by the `RippleAPI` constructor's `feeCushion`.
+cushion | number | *Optional* The fee is the product of the base fee, the `load_factor`, and this cushion. Default is provided by the `AitdAPI` constructor's `feeCushion`.
 
 ### Return Value
 
-This method returns a promise that resolves with a string-encoded floating point value representing the estimated fee to submit a transaction, expressed in XRP.
+This method returns a promise that resolves with a string-encoded floating point value representing the estimated fee to submit a transaction, expressed in AITD.
 
 ### Example
 
@@ -1557,10 +1557,10 @@ sequence | [sequence](#account-sequence-number) | The account sequence number of
 type | [transactionType](#transaction-types) | The type of the transaction.
 specification | object | A specification that would produce the same outcome as this transaction. *Exception:* For payment transactions, this omits the `destination.amount` field, to prevent misunderstanding. The structure of the specification depends on the value of the `type` field (see [Transaction Types](#transaction-types) for details). *Note:* This is **not** necessarily the same as the original specification.
 outcome | object | The outcome of the transaction (what effects it had).
-*outcome.* result | string | Result code returned by rippled. See [Transaction Results](https://developers.ripple.com/transaction-results.html) for a complete list.
-*outcome.* fee | [value](#value) | The XRP fee that was charged for the transaction.
-*outcome.balanceChanges.* \* | array\<[balance](#amount)\> | Key is the XRP Ledger address; value is an array of signed amounts representing changes of balances for that address.
-*outcome.orderbookChanges.* \* | array | Key is the maker's XRP Ledger address; value is an array of changes
+*outcome.* result | string | Result code returned by aitdd. See [Transaction Results](https://developers.aitd.com/transaction-results.html) for a complete list.
+*outcome.* fee | [value](#value) | The AITD fee that was charged for the transaction.
+*outcome.balanceChanges.* \* | array\<[balance](#amount)\> | Key is the AITD Ledger address; value is an array of signed amounts representing changes of balances for that address.
+*outcome.orderbookChanges.* \* | array | Key is the maker's AITD Ledger address; value is an array of changes
 *outcome.orderbookChanges.* \*[] | object | A change to an order.
 *outcome.orderbookChanges.\*[].* direction | string | Equal to "buy" for buy orders and "sell" for sell orders.
 *outcome.orderbookChanges.\*[].* quantity | [amount](#amount) | The amount to be bought or sold by the maker.
@@ -1597,7 +1597,7 @@ return api.getTransaction(id).then(transaction => {
     "source": {
       "address": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
       "maxAmount": {
-        "currency": "XRP",
+        "currency": "AITD",
         "value": "1.112209"
       }
     },
@@ -1637,13 +1637,13 @@ return api.getTransaction(id).then(transaction => {
       ],
       "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59": [
         {
-          "currency": "XRP",
+          "currency": "AITD",
           "value": "-1.101208"
         }
       ],
       "r9tGqzZgKxVFvzKFdUqXAqTzazWBUia8Qr": [
         {
-          "currency": "XRP",
+          "currency": "AITD",
           "value": "1.101198"
         },
         {
@@ -1658,7 +1658,7 @@ return api.getTransaction(id).then(transaction => {
         {
           "direction": "buy",
           "quantity": {
-            "currency": "XRP",
+            "currency": "AITD",
             "value": "1.101198"
           },
           "totalPrice": {
@@ -1736,7 +1736,7 @@ return api.getTransactions(address).then(transaction => {
       "source": {
         "address": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
         "maxAmount": {
-          "currency": "XRP",
+          "currency": "AITD",
           "value": "1.112209"
         }
       },
@@ -1776,13 +1776,13 @@ return api.getTransactions(address).then(transaction => {
         ],
         "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59": [
           {
-            "currency": "XRP",
+            "currency": "AITD",
             "value": "-1.101208"
           }
         ],
         "r9tGqzZgKxVFvzKFdUqXAqTzazWBUia8Qr": [
           {
-            "currency": "XRP",
+            "currency": "AITD",
             "value": "1.101198"
           },
           {
@@ -1797,7 +1797,7 @@ return api.getTransactions(address).then(transaction => {
           {
             "direction": "buy",
             "quantity": {
-              "currency": "XRP",
+              "currency": "AITD",
               "value": "1.101198"
             },
             "totalPrice": {
@@ -1830,7 +1830,7 @@ return api.getTransactions(address).then(transaction => {
       "source": {
         "address": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
         "maxAmount": {
-          "currency": "XRP",
+          "currency": "AITD",
           "value": "1.112209"
         }
       },
@@ -1870,13 +1870,13 @@ return api.getTransactions(address).then(transaction => {
         ],
         "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59": [
           {
-            "currency": "XRP",
+            "currency": "AITD",
             "value": "-1.101208"
           }
         ],
         "r9tGqzZgKxVFvzKFdUqXAqTzazWBUia8Qr": [
           {
-            "currency": "XRP",
+            "currency": "AITD",
             "value": "1.101198"
           },
           {
@@ -1891,7 +1891,7 @@ return api.getTransactions(address).then(transaction => {
           {
             "direction": "buy",
             "quantity": {
-              "currency": "XRP",
+              "currency": "AITD",
               "value": "1.101198"
             },
             "totalPrice": {
@@ -1942,7 +1942,7 @@ counterparty | object | Properties of the trustline from the perspective of the 
 *counterparty.* limit | [value](#value) | The maximum amount that the counterparty can be owed through the trustline.
 *counterparty.* authorized | boolean | *Optional* If true, the counterparty authorizes this party to hold issuances from the counterparty.
 *counterparty.* frozen | boolean | *Optional* If true, the trustline is frozen, which means that funds can only be sent to the counterparty.
-*counterparty.* ripplingDisabled | boolean | *Optional* If true, payments cannot ripple through this trustline.
+*counterparty.* ripplingDisabled | boolean | *Optional* If true, payments cannot aitd through this trustline.
 state | object | Properties of the trustline regarding it's current state that are not part of the specification.
 *state.* balance | [signedValue](#value) | The balance on the trustline, representing which party owes the other and by how much.
 
@@ -2084,7 +2084,7 @@ Name | Type | Description
 ---- | ---- | -----------
 currency | [currency](#currency) | The three-character code or hexadecimal string used to denote currencies
 value | [signedValue](#value) | The balance on the trustline
-counterparty | [address](#address) | *Optional* The XRP Ledger address of the account that owes or is owed the funds.
+counterparty | [address](#address) | *Optional* The AITD Ledger address of the account that owes or is owed the funds.
 
 ### Example
 
@@ -2099,7 +2099,7 @@ return api.getBalances(address).then(balances =>
 [
   {
     "value": "922.913243",
-    "currency": "XRP"
+    "currency": "AITD"
   },
   {
     "value": "0",
@@ -2235,7 +2235,7 @@ Returns aggregate balances by currency plus a breakdown of assets and obligation
 
 Name | Type | Description
 ---- | ---- | -----------
-address | [address](#address) | The XRP Ledger address of the account to get the balance sheet of.
+address | [address](#address) | The AITD Ledger address of the account to get the balance sheet of.
 options | object | *Optional* Options to determine how the balances will be calculated.
 *options.* excludeAddresses | array\<[address](#address)\> | *Optional* Addresses to exclude from the balance totals.
 *options.* ledgerVersion | integer | *Optional* Get the balance sheet as of this historical ledger version.
@@ -2333,7 +2333,7 @@ Name | Type | Description
 ---- | ---- | -----------
 pathfind | object | Specification of a pathfind request.
 *pathfind.* source | object | Properties of the source of funds.
-*pathfind.source.* address | [address](#address) | The XRP Ledger address of the account where funds will come from.
+*pathfind.source.* address | [address](#address) | The AITD Ledger address of the account where funds will come from.
 *pathfind.source.* amount | [laxAmount](#amount) | *Optional* The amount of funds to send.
 *pathfind.source.* currencies | array | *Optional* An array of currencies (with optional counterparty) that may be used in the payment paths.
 *pathfind.source.* currencies[] | object | A currency with optional counterparty.
@@ -2400,7 +2400,7 @@ return api.getPaths(pathfind)
         "value": "100"
       }
     },
-    "paths": "[[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"XRP\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"XRP\"},{\"currency\":\"USD\",\"issuer\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"XRP\"},{\"currency\":\"USD\",\"issuer\":\"rHHa9t2kLQyXRbdLkSzEgkzwf9unmFgZs9\"},{\"account\":\"rHHa9t2kLQyXRbdLkSzEgkzwf9unmFgZs9\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}]]"
+    "paths": "[[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"AITD\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"AITD\"},{\"currency\":\"USD\",\"issuer\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMAz5ZnK73nyNUL4foAvaxdreczCkG3vA6\"},{\"currency\":\"AITD\"},{\"currency\":\"USD\",\"issuer\":\"rHHa9t2kLQyXRbdLkSzEgkzwf9unmFgZs9\"},{\"account\":\"rHHa9t2kLQyXRbdLkSzEgkzwf9unmFgZs9\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}]]"
   },
   {
     "source": {
@@ -2418,13 +2418,13 @@ return api.getPaths(pathfind)
         "value": "100"
       }
     },
-    "paths": "[[{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMwjYedjc7qqtKYVLiAccJSmCwih4LnE2q\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMwjYedjc7qqtKYVLiAccJSmCwih4LnE2q\"},{\"currency\":\"XRP\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMwjYedjc7qqtKYVLiAccJSmCwih4LnE2q\"},{\"currency\":\"XRP\"},{\"currency\":\"USD\",\"issuer\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}]]"
+    "paths": "[[{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMwjYedjc7qqtKYVLiAccJSmCwih4LnE2q\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMwjYedjc7qqtKYVLiAccJSmCwih4LnE2q\"},{\"currency\":\"AITD\"},{\"currency\":\"USD\",\"issuer\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}],[{\"account\":\"rMwjYedjc7qqtKYVLiAccJSmCwih4LnE2q\"},{\"currency\":\"AITD\"},{\"currency\":\"USD\",\"issuer\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rpHgehzdpfWRXKvSv6duKvVuo1aZVimdaT\"},{\"account\":\"rMH4UxPrbuMa1spCBR98hLLyNJp4d8p4tM\"}]]"
   },
   {
     "source": {
       "address": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
       "maxAmount": {
-        "currency": "XRP",
+        "currency": "AITD",
         "value": "0.207669"
       }
     },
@@ -2452,7 +2452,7 @@ Returns open orders for the specified account. Open orders are orders that have 
 
 Name | Type | Description
 ---- | ---- | -----------
-address | [address](#address) | The XRP Ledger address of the account to get open orders for.
+address | [address](#address) | The AITD Ledger address of the account to get open orders for.
 options | object | *Optional* Options that determine what orders will be returned.
 *options.* ledgerVersion | integer | *Optional* Return orders as of this historical ledger version.
 *options.* ledgerVersion | string | *Optional* Return orders as of this historical ledger version.
@@ -2685,7 +2685,7 @@ return api.getOrders(address).then(orders =>
     "specification": {
       "direction": "buy",
       "quantity": {
-        "currency": "XRP",
+        "currency": "AITD",
         "value": "115760.19"
       },
       "totalPrice": {
@@ -2789,7 +2789,7 @@ return api.getOrders(address).then(orders =>
         "counterparty": "r9Dr5xwkeLegBeXq6ujinjSBLQzQ1zQGjH"
       },
       "totalPrice": {
-        "currency": "XRP",
+        "currency": "AITD",
         "value": "2229.229447"
       }
     },
@@ -2829,7 +2829,7 @@ return api.getOrders(address).then(orders =>
 
 Returns open orders for the specified account. Open orders are orders that have not yet been fully executed and are still in the order book.
 
-**Breaking change:** In ripple-lib 1.1.0 and earlier, orders returned by this method were not sorted correctly. Orders are now sorted correctly, from best to worst.
+**Breaking change:** In aitd-lib 1.1.0 and earlier, orders returned by this method were not sorted correctly. Orders are now sorted correctly, from best to worst.
 
 **See also:** An alternative way to get orderbooks is with `request` and [`formatBidsAndAsks`](#formatbidsandasks).
 
@@ -2839,8 +2839,8 @@ Name | Type | Description
 ---- | ---- | -----------
 address | [address](#address) | Address of an account to use as point-of-view. (This affects which unfunded offers are returned.)
 orderbook | object | The order book to get.
-*orderbook.* base | object | A currency-counterparty pair, or just currency if it's XRP
-*orderbook.* counter | object | A currency-counterparty pair, or just currency if it's XRP
+*orderbook.* base | object | A currency-counterparty pair, or just currency if it's AITD
+*orderbook.* counter | object | A currency-counterparty pair, or just currency if it's AITD
 options | object | *Optional* Options to determine what to return.
 *options.* ledgerVersion | integer | *Optional* Return the order book as of this historical ledger version.
 *options.* ledgerVersion | string | *Optional* Return the order book as of this historical ledger version.
@@ -2877,7 +2877,7 @@ asks[] | object | An order in the order book.
 
 **Raw order data:** The response includes a `data` property containing the raw order data. This may include `owner_funds`, `Flags`, and other fields.
 
-For details, see the rippled method [book_offers](https://ripple.com/build/rippled-apis/#book-offers).
+For details, see the aitdd method [book_offers](https://aitd.com/build/aitdd-apis/#book-offers).
 
 ### Example
 
@@ -3950,16 +3950,16 @@ This method returns a promise that resolves with an array of objects with the fo
 
 Name | Type | Description
 ---- | ---- | -----------
-defaultRipple | boolean | *Optional* Enable [rippling](https://ripple.com/build/understanding-the-noripple-flag/) on this account’s trust lines by default. (New in [rippled 0.27.3](https://github.com/ripple/rippled/releases/tag/0.27.3))
-depositAuth | boolean | *Optional* Enable [Deposit Authorization](https://ripple.com/build/deposit-authorization/) on this account. If set, transactions cannot send value of any kind to this account unless the sender of those transactions is the account itself. (Requires the [DepositAuth amendment](https://ripple.com/build/known-amendments/#depositauth))
-disableMasterKey | boolean | *Optional* Disallows use of the master key to sign transactions for this account. To disable the master key, you must authorize the transaction by signing it with the master key pair. You cannot use a regular key pair or a multi-signature. You can re-enable the master key pair using a regular key pair or multi-signature. See [AccountSet](https://developers.ripple.com/accountset.html).
-disallowIncomingXRP | boolean | *Optional* Indicates that client applications should not send XRP to this account. Not enforced by rippled.
+defaultAitd | boolean | *Optional* Enable [rippling](https://aitd.com/build/understanding-the-noaitd-flag/) on this account’s trust lines by default. (New in [aitdd 0.27.3](https://github.com/aitd/aitdd/releases/tag/0.27.3))
+depositAuth | boolean | *Optional* Enable [Deposit Authorization](https://aitd.com/build/deposit-authorization/) on this account. If set, transactions cannot send value of any kind to this account unless the sender of those transactions is the account itself. (Requires the [DepositAuth amendment](https://aitd.com/build/known-amendments/#depositauth))
+disableMasterKey | boolean | *Optional* Disallows use of the master key to sign transactions for this account. To disable the master key, you must authorize the transaction by signing it with the master key pair. You cannot use a regular key pair or a multi-signature. You can re-enable the master key pair using a regular key pair or multi-signature. See [AccountSet](https://developers.aitd.com/accountset.html).
+disallowIncomingAITD | boolean | *Optional* Indicates that client applications should not send AITD to this account. Not enforced by aitdd.
 domain | string | *Optional* The domain that owns this account, as a hexadecimal string representing the ASCII for the domain in lowercase.
 emailHash | string,null | *Optional* Hash of an email address to be used for generating an avatar image. Conventionally, clients use Gravatar to display this image. Use `null` to clear.
 enableTransactionIDTracking | boolean | *Optional* Track the ID of this account’s most recent transaction.
 globalFreeze | boolean | *Optional* Freeze all assets issued by this account.
 memos | [memos](#transaction-memos) | *Optional* Array of memos to attach to the transaction.
-messageKey | string | *Optional* Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Ripple.
+messageKey | string | *Optional* Public key for sending encrypted messages to this account. Conventionally, it should be a secp256k1 key, the same encryption that is used by the rest of Aitd.
 noFreeze | boolean | *Optional* Permanently give up the ability to freeze individual trust lines. This flag can never be disabled after being enabled.
 passwordSpent | boolean | *Optional* Indicates that the account has used its free SetRegularKey transaction.
 regularKey | [address](#address),null | *Optional* The public key of a new keypair, to use as the regular key to this account, as a base-58-encoded string in the same format as an account address. Use `null` to remove the regular key.
@@ -3969,7 +3969,7 @@ signers | object | *Optional* Settings that determine what sets of accounts can 
 *signers.* threshold | integer | A target number for the signer weights. A multi-signature from this list is valid only if the sum weights of the signatures provided is equal or greater than this value. To delete the signers setting, use the value `0`.
 *signers.* weights | array | *Optional* Weights of signatures for each signer.
 *signers.* weights[] | object | An association of an address and a weight.
-*signers.weights[].* address | [address](#address) | An account address on the XRP Ledger
+*signers.weights[].* address | [address](#address) | An account address on the AITD Ledger
 *signers.weights[].* weight | integer | The weight that the signature of this account counts as towards the threshold.
 tickSize | string | *Optional* Tick size to use for offers involving a currency issued by this address. The exchange rates of those offers is rounded to this many significant digits. Valid values are 3 to 15 inclusive, or 0 to disable.
 transferRate | number,null | *Optional* The fee to charge when users transfer this account’s issuances, as the decimal amount that must be sent to deliver 1 unit. Has precision up to 9 digits beyond the decimal point. Use `null` to set no fee.
@@ -3987,7 +3987,7 @@ return api.getSettings(address).then(settings =>
 ```json
 {
   "requireDestinationTag": true,
-  "disallowIncomingXRP": true,
+  "disallowIncomingAITD": true,
   "emailHash": "23463B99B62A72F26ED677CC556C44E8",
   "walletLocator": "00000000000000000000000000000000000000000000000000000000DEADBEEF",
   "domain": "example.com",
@@ -4034,7 +4034,7 @@ This method returns a promise that resolves with an object with the following st
 Name | Type | Description
 ---- | ---- | -----------
 sequence | [sequence](#account-sequence-number) | The next (smallest unused) sequence number for this account.
-xrpBalance | [value](#value) | The XRP balance owned by the account.
+aitdBalance | [value](#value) | The AITD balance owned by the account.
 ownerCount | integer | Number of other ledger entries (specifically, trust lines and offers) attributed to this account. This is used to calculate the total reserve required to use the account.
 previousAffectingTransactionID | string | Hash value representing the most recent transaction that affected this account node directly. **Note:** This does not include changes to the account’s trust lines and offers.
 previousAffectingTransactionLedgerVersion | integer | The ledger version that the transaction identified by the `previousAffectingTransactionID` was validated in.
@@ -4053,7 +4053,7 @@ return api.getAccountInfo(address).then(info =>
 ```json
 {
   "sequence": 23,
-  "xrpBalance": "922.913243",
+  "aitdBalance": "922.913243",
   "ownerCount": 1,
   "previousAffectingTransactionID": "19899273706A9E040FDB5885EE991A1DC2BAD878A0D6E7DBCFB714E63BF737F7",
   "previousAffectingTransactionLedgerVersion": 6614625
@@ -4098,7 +4098,7 @@ validated | boolean | *Optional* If included and set to true, the information in
 The types of objects that may be returned include:
 
 * `Offer` objects for orders that are currently live, unfunded, or expired but not yet removed.
-* `RippleState` objects for trust lines where this account's side is not in the default state.
+* `AitdState` objects for trust lines where this account's side is not in the default state.
 * A `SignerList` object if the account has multi-signing enabled.
 * `Escrow` objects for held payments that have not yet been executed or canceled.
 * `PayChannel` objects for open payment channels.
@@ -4130,7 +4130,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "ASP",
         "issuer": "r3vi7mWxru9rJCxETCyA1CHvzL96eZWx5z",
@@ -4156,7 +4156,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "XAU",
         "issuer": "r3vi7mWxru9rJCxETCyA1CHvzL96eZWx5z",
@@ -4182,7 +4182,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "USD",
         "issuer": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
@@ -4208,7 +4208,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "MXN",
         "issuer": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
@@ -4234,7 +4234,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "EUR",
         "issuer": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
@@ -4260,7 +4260,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "3"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "CNY",
         "issuer": "rnuF96W4SZoCJmbHYBFoJZpR8eCaxNvekK",
@@ -4286,7 +4286,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "DYM",
         "issuer": "r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59",
@@ -4312,7 +4312,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "0"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "CHF",
         "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
@@ -4338,7 +4338,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "3"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "BTC",
         "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
@@ -4364,7 +4364,7 @@ return api.getAccountObjects(address: address).then(objects =>
         "value": "5000"
       },
       "HighNode": "0000000000000000",
-      "LedgerEntryType": "RippleState",
+      "LedgerEntryType": "AitdState",
       "LowLimit": {
         "currency": "USD",
         "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
@@ -4405,10 +4405,10 @@ This method returns a promise that resolves with an object with the following st
 Name | Type | Description
 ---- | ---- | -----------
 account | [address](#address) | Address that created the payment channel.
-destination | [address](#address) | Address to receive XRP claims against this channel.
-amount | [value](#value) | The total amount of XRP funded in this channel.
-balance | [value](#value) | The total amount of XRP delivered by this channel.
-settleDelay | number | Amount of seconds the source address must wait before closing the channel if it has unclaimed XRP.
+destination | [address](#address) | Address to receive AITD claims against this channel.
+amount | [value](#value) | The total amount of AITD funded in this channel.
+balance | [value](#value) | The total amount of AITD delivered by this channel.
+settleDelay | number | Amount of seconds the source address must wait before closing the channel if it has unclaimed AITD.
 previousAffectingTransactionID | string | Hash value representing the most recent transaction that affected this payment channel.
 previousAffectingTransactionLedgerVersion | integer | The ledger version that the transaction identified by the `previousAffectingTransactionID` was validated in.
 previousAffectingTransactionLedgerVersion | string | The ledger version that the transaction identified by the `previousAffectingTransactionID` was validated in.
@@ -4475,9 +4475,9 @@ ledgerVersion | integer | The ledger version of this ledger.
 ledgerVersion | string | The ledger version of this ledger.
 parentLedgerHash | string | Unique identifying hash of the ledger that came immediately before this one.
 parentCloseTime | date-time string | The previous ledger's recorded close time.
-totalDrops | [value](#value) | Total number of drops (1/1,000,000th of an XRP) in the network, as a quoted integer. (This decreases as transaction fees cause XRP to be destroyed.)
+totalDrops | [value](#value) | Total number of drops (1/1,000,000th of an AITD) in the network, as a quoted integer. (This decreases as transaction fees cause AITD to be destroyed.)
 transactionHash | string | Hash of the transaction information included in this ledger.
-rawState | string | *Optional* A JSON string containing all state data for this ledger in rippled JSON format.
+rawState | string | *Optional* A JSON string containing all state data for this ledger in aitdd JSON format.
 stateHashes | array\<string\> | *Optional* An array of hashes of all state data in this ledger.
 transactionHashes | array\<[transactionHash](#transaction-id)\> | *Optional* An array of hashes of all transactions that were validated in this ledger.
 transactions | array\<[getTransaction](#gettransaction)\> | *Optional* Array of all transactions that were validated in this ledger. Transactions are represented in the same format as the return value of [getTransaction](#gettransaction).
@@ -4510,7 +4510,7 @@ return api.getLedger()
 
 `parseAccountFlags(Flags: number): object`
 
-Parse an `AccountRoot` object's [`Flags`](https://developers.ripple.com/accountroot.html#accountroot-flags).
+Parse an `AccountRoot` object's [`Flags`](https://developers.aitd.com/accountroot.html#accountroot-flags).
 
 ### Parameters
 
@@ -4518,7 +4518,7 @@ This method takes one parameter, the AccountRoot `Flags` number to parse. Note t
 
 ### Return Value
 
-This method returns an object with containing a key for each AccountRoot flag known to this version of RippleAPI. Each flag has a boolean value of `true` or `false`.
+This method returns an object with containing a key for each AccountRoot flag known to this version of AitdAPI. Each flag has a boolean value of `true` or `false`.
 
 ### Example
 
@@ -4534,11 +4534,11 @@ console.log(JSON.stringify(flags, null, 2))
   "requireDestinationTag": false,
   "requireAuthorization": false,
   "depositAuth": true,
-  "disallowIncomingXRP": false,
+  "disallowIncomingAITD": false,
   "disableMasterKey": false,
   "noFreeze": false,
   "globalFreeze": false,
-  "defaultRipple": false
+  "defaultAitd": false
 }
 ```
 
@@ -4548,7 +4548,7 @@ console.log(JSON.stringify(flags, null, 2))
 
 Prepare a transaction. The prepared transaction must subsequently be [signed](#sign) and [submitted](#submit).
 
-This method works with any of [the transaction types supported by rippled](https://developers.ripple.com/transaction-types.html).
+This method works with any of [the transaction types supported by aitdd](https://developers.aitd.com/transaction-types.html).
 
 Notably, this is the preferred method for preparing `DepositPreauth` or `AccountDelete` transactions.
 
@@ -4556,7 +4556,7 @@ Notably, this is the preferred method for preparing `DepositPreauth` or `Account
 
 Name | Type | Description
 ---- | ---- | -----------
-transaction | [transaction](https://developers.ripple.com/transaction-formats.html) | The specification (JSON) of the transaction to prepare. Set `Account` to the address of the account that is creating the transaction. You may omit auto-fillable fields like `Fee`, `Flags`, and `Sequence` to have them set automatically.
+transaction | [transaction](https://developers.aitd.com/transaction-formats.html) | The specification (JSON) of the transaction to prepare. Set `Account` to the address of the account that is creating the transaction. You may omit auto-fillable fields like `Fee`, `Flags`, and `Sequence` to have them set automatically.
 instructions | [instructions](#transaction-instructions) | *Optional* Instructions for executing the transaction.
 
 ### Return Value
@@ -4569,7 +4569,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -4625,7 +4625,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -4699,7 +4699,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -4768,7 +4768,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -4781,7 +4781,7 @@ instructions | object | The instructions for how to execute the transaction afte
 ```javascript
 const address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59';
 
-// Buy 10.10 USD (of the specified issuer) for 2.0 XRP (2000000 drops), fill or kill.
+// Buy 10.10 USD (of the specified issuer) for 2.0 AITD (2000000 drops), fill or kill.
 const order = {
   "direction": "buy",
   "quantity": {
@@ -4837,7 +4837,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -4891,7 +4891,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -4904,7 +4904,7 @@ instructions | object | The instructions for how to execute the transaction afte
 ```javascript
 const address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59';
 const settings = {
-  "domain": "ripple.com",
+  "domain": "aitd.com",
   "memos": [
     {
       "type": "test",
@@ -4920,7 +4920,7 @@ return api.prepareSettings(address, settings)
 
 ```json
 {
-  "domain": "ripple.com",
+  "domain": "aitd.com",
   "memos": [
     {
       "type": "test",
@@ -4946,9 +4946,9 @@ address | [address](#address) | The address of the account that is creating the 
 escrowCreation | [escrowCreation](#escrow-creation) | The specification of the escrow creation to prepare.
 instructions | [instructions](#transaction-instructions) | *Optional* Instructions for executing the transaction
 
-This is a convenience method for generating the EscrowCreate JSON used by rippled, so the same restrictions apply.
+This is a convenience method for generating the EscrowCreate JSON used by aitdd, so the same restrictions apply.
 
-Field mapping: `allowCancelAfter` is equivalent to rippled's `CancelAfter`; `allowExecuteAfter` is equivalent to `FinishAfter`. At the `allowCancelAfter` time, the escrow is considered expired. This means that the funds can only be returned to the sender. At the `allowExecuteAfter` time, the escrow is permitted to be released to the recipient (if the `condition` is fulfilled).
+Field mapping: `allowCancelAfter` is equivalent to aitdd's `CancelAfter`; `allowExecuteAfter` is equivalent to `FinishAfter`. At the `allowCancelAfter` time, the escrow is considered expired. This means that the funds can only be returned to the sender. At the `allowExecuteAfter` time, the escrow is permitted to be released to the recipient (if the `condition` is fulfilled).
 
 Note that `allowCancelAfter` must be chronologically later than `allowExecuteAfter`.
 
@@ -4962,7 +4962,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5021,7 +5021,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5078,7 +5078,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5137,7 +5137,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5196,7 +5196,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5252,7 +5252,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5309,7 +5309,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5369,7 +5369,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5425,7 +5425,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5467,7 +5467,7 @@ return api.prepareCheckCash(address, checkCash).then(prepared =>
 
 Prepare a ticket transaction. The prepared transaction must subsequently be [signed](#sign) and [submitted](#submit).
 
-Ticket functionality requires the [TicketBatch amendment](https://github.com/ripple/xrpl-dev-portal/issues/898). As of 2020-11-24, this amendment is not activated on the Mainnet, Testnet, or Devnet.
+Ticket functionality requires the [TicketBatch amendment](https://github.com/aitd/aitdl-dev-portal/issues/898). As of 2020-11-24, this amendment is not activated on the Mainnet, Testnet, or Devnet.
 
 ### Parameters
 
@@ -5487,7 +5487,7 @@ All "prepare*" methods have the same return type.
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | The prepared transaction in rippled JSON format.
+txJSON | string | The prepared transaction in aitdd JSON format.
 instructions | object | The instructions for how to execute the transaction after adding automatic defaults.
 *instructions.* fee | [value](#value) | The fee to pay for the transaction. See [Transaction Fees](#transaction-fees) for more information. For multi-signed transactions, this fee will be multiplied by (N+1), where N is the number of signatures you plan to provide.
 *instructions.* maxLedgerVersion | integer,null | The highest ledger version that the transaction can be included in. Set to `null` if there is no maximum. If not null, this must be an integer greater than 0, or one of the following strings: 'validated', 'closed', 'current'.
@@ -5528,7 +5528,7 @@ sign(txJSON: string, keypair: object, options: object): {signedTransaction: stri
 
 Sign a prepared transaction. The signed transaction must subsequently be [submitted](#submit).
 
-This method can sign any of [the transaction types supported by ripple-binary-codec](https://github.com/ripple/ripple-binary-codec/blob/cfcde79c19c359e9a0466d7bc3dc9a3aef47bb99/src/enums/definitions.json#L1637). When a new transaction type is added to the XRP Ledger, it will be unrecognized until `ripple-binary-codec` is updated. If you try to sign an unrecognized transaction type, this method throws an error similar to the following:
+This method can sign any of [the transaction types supported by aitd-binary-codec](https://github.com/aitd/aitd-binary-codec/blob/cfcde79c19c359e9a0466d7bc3dc9a3aef47bb99/src/enums/definitions.json#L1637). When a new transaction type is added to the AITD Ledger, it will be unrecognized until `aitd-binary-codec` is updated. If you try to sign an unrecognized transaction type, this method throws an error similar to the following:
 
 `Error: [TRANSACTION_TYPE] is not a valid name or ordinal for TransactionType`
 
@@ -5536,7 +5536,7 @@ This method can sign any of [the transaction types supported by ripple-binary-co
 
 Name | Type | Description
 ---- | ---- | -----------
-txJSON | string | Transaction represented as a JSON string in rippled format.
+txJSON | string | Transaction represented as a JSON string in aitdd format.
 keypair | object | *Optional* The private and public key of the account that is initiating the transaction. (This field cannot be used with secret).
 *keypair.* privateKey | privateKey | The uppercase hexadecimal representation of the secp256k1 or Ed25519 private key.
 *keypair.* publicKey | publicKey | The uppercase hexadecimal representation of the secp256k1 or Ed25519 public key.
@@ -5576,7 +5576,7 @@ return api.sign(txJSON, secret); // or: api.sign(txJSON, keypair);
 ### Example (multisigning)
 
 ```javascript
-const RippleAPI = require('ripple-lib').RippleAPI;
+const AitdAPI = require('aitd-lib').AitdAPI;
 
 // jon's address will have a multi-signing setup with a quorum of 2
 const jon = {
@@ -5623,8 +5623,8 @@ const multiSignPaymentTransaction = {
     Amount: '88000000'
 };
 
-const api = new RippleAPI({
-    server: 'wss://s.altnet.rippletest.net:51233'
+const api = new AitdAPI({
+    server: 'wss://s.altnet.aitdtest.net:51233'
 });
 
 api.connect().then(() => {
@@ -5722,20 +5722,20 @@ When successful, this method returns an object containing the following fields:
 
 | `Field`                 | Type    | Description                              |
 |:------------------------|:--------|:-----------------------------------------|
-| `engine_result`         | String  | Text [result code](https://xrpl.org/transaction-results.html) indicating the preliminary result of the transaction, for example `tesSUCCESS` |
-| `engine_result_code`    | Integer | Numeric version of the [result code](https://xrpl.org/transaction-results.html). **Not recommended.** |
+| `engine_result`         | String  | Text [result code](https://aitdl.org/transaction-results.html) indicating the preliminary result of the transaction, for example `tesSUCCESS` |
+| `engine_result_code`    | Integer | Numeric version of the [result code](https://aitdl.org/transaction-results.html). **Not recommended.** |
 | `engine_result_message` | String  | Human-readable explanation of the transaction's preliminary result |
 | `tx_blob`               | String  | The complete transaction in hex string format |
 | `tx_json`               | Object  | The complete transaction in JSON format  |
-| `accepted`              | Boolean | The value `true` indicates that the transaction was applied, queued, broadcast, or kept for later. The value `false` indicates that none of those happened, so the transaction cannot possibly succeed as long as you do not submit it again and have not already submitted it another time. [New in: rippled 1.5.0] |
-| `account_sequence_available` | Number | The next [Sequence Number](https://xrpl.org/basic-data-types.html#account-sequence) available for the sending account after all pending and [queued](https://xrpl.org/transaction-queue.html) transactions. [New in: rippled 1.5.0] |
-| `account_sequence_next` | number  | The next [Sequence Number](https://xrpl.org/basic-data-types.html#account-sequence) for the sending account after all transactions that have been provisionally applied, but not transactions in the [queue](https://xrpl.org/transaction-queue.html). [New in: rippled 1.5.0] |
-| `applied`               | Boolean | The value `true` indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version. [New in: rippled 1.5.0] |
-| `broadcast`             | Boolean | The value `true` indicates this transaction was broadcast to peer servers in the peer-to-peer XRP Ledger network. (Note: if the server has no peers, such as in [stand-alone mode](https://xrpl.org/rippled-server-modes.html#reasons-to-run-a-rippled-server-in-stand-alone-mode), the server uses the value `true` for cases where it _would_ have broadcast the transaction.) The value `false` indicates the transaction was not broadcast to any other servers. [New in: rippled 1.5.0] |
-| `kept`                  | Boolean | The value `true` indicates that the transaction was kept to be retried later. [New in: rippled 1.5.0] |
-| `queued`                | Boolean | The value `true` indicates the transaction was put in the [Transaction Queue](https://xrpl.org/transaction-queue.html), which means it is likely to be included in a future ledger version. [New in: rippled 1.5.0] |
-| `open_ledger_cost`      | String  | The current [open ledger cost](https://xrpl.org/transaction-cost.html#open-ledger-cost) before processing this transaction. Transactions with a lower cost are likely to be [queued](https://xrpl.org/transaction-queue.html). [New in: rippled 1.5.0] |
-| `validated_ledger_index` | Integer  | The [ledger index](https://xrpl.org/basic-data-types.html#ledger-index) of the newest validated ledger at the time of submission. This provides a lower bound on the ledger versions that the transaction can appear in as a result of this request. (The transaction could only have been validated in this ledger version or earlier if it had already been submitted before.) |
+| `accepted`              | Boolean | The value `true` indicates that the transaction was applied, queued, broadcast, or kept for later. The value `false` indicates that none of those happened, so the transaction cannot possibly succeed as long as you do not submit it again and have not already submitted it another time. [New in: aitdd 1.5.0] |
+| `account_sequence_available` | Number | The next [Sequence Number](https://aitdl.org/basic-data-types.html#account-sequence) available for the sending account after all pending and [queued](https://aitdl.org/transaction-queue.html) transactions. [New in: aitdd 1.5.0] |
+| `account_sequence_next` | number  | The next [Sequence Number](https://aitdl.org/basic-data-types.html#account-sequence) for the sending account after all transactions that have been provisionally applied, but not transactions in the [queue](https://aitdl.org/transaction-queue.html). [New in: aitdd 1.5.0] |
+| `applied`               | Boolean | The value `true` indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version. [New in: aitdd 1.5.0] |
+| `broadcast`             | Boolean | The value `true` indicates this transaction was broadcast to peer servers in the peer-to-peer AITD Ledger network. (Note: if the server has no peers, such as in [stand-alone mode](https://aitdl.org/aitdd-server-modes.html#reasons-to-run-a-aitdd-server-in-stand-alone-mode), the server uses the value `true` for cases where it _would_ have broadcast the transaction.) The value `false` indicates the transaction was not broadcast to any other servers. [New in: aitdd 1.5.0] |
+| `kept`                  | Boolean | The value `true` indicates that the transaction was kept to be retried later. [New in: aitdd 1.5.0] |
+| `queued`                | Boolean | The value `true` indicates the transaction was put in the [Transaction Queue](https://aitdl.org/transaction-queue.html), which means it is likely to be included in a future ledger version. [New in: aitdd 1.5.0] |
+| `open_ledger_cost`      | String  | The current [open ledger cost](https://aitdl.org/transaction-cost.html#open-ledger-cost) before processing this transaction. Transactions with a lower cost are likely to be [queued](https://aitdl.org/transaction-queue.html). [New in: aitdd 1.5.0] |
+| `validated_ledger_index` | Integer  | The [ledger index](https://aitdl.org/basic-data-types.html#ledger-index) of the newest validated ledger at the time of submission. This provides a lower bound on the ledger versions that the transaction can appear in as a result of this request. (The transaction could only have been validated in this ledger version or earlier if it had already been submitted before.) |
 
 Note: Many situations can prevent a transaction from processing successfully, such as a lack of trust lines connecting the two accounts in a payment, or changes in the state of the ledger since the time the transaction was constructed. Even if nothing is wrong, it may take several seconds to close and validate the ledger version that includes the transaction. Do not consider the transaction's results final until they appear in a validated ledger version.
 
@@ -5781,13 +5781,13 @@ const result = await api.request('submit', {
 }
 ```
 
-(In ripple-lib 1.8.0, [the old `submit` method](https://github.com/ripple/ripple-lib/blob/1.7.0/docs/index.md#submit) was deprecated.)
+(In aitd-lib 1.8.0, [the old `submit` method](https://github.com/aitd/aitd-lib/blob/1.7.0/docs/index.md#submit) was deprecated.)
 
 ## generateXAddress
 
 `generateXAddress(options?: object): {address: string, secret: string}`
 
-Generate a new XRP Ledger address and corresponding secret.
+Generate a new AITD Ledger address and corresponding secret.
 
 ### Parameters
 
@@ -5805,7 +5805,7 @@ This method returns an object with the following structure:
 
 Name | Type | Description
 ---- | ---- | -----------
-xAddress | [xAddress](#x-address) | A randomly generated XRP Ledger address in X-address format.
+xAddress | [xAddress](#x-address) | A randomly generated AITD Ledger address in X-address format.
 secret | secret string | The secret corresponding to the address.
 
 ### Example
@@ -5829,7 +5829,7 @@ return api.generateXAddress();
 
 Deprecated: This method returns a classic address. If you do not need the classic address, use `generateXAddress` instead.
 
-Generate a new XRP Ledger address and corresponding secret.
+Generate a new AITD Ledger address and corresponding secret.
 
 ### Parameters
 
@@ -5847,8 +5847,8 @@ This method returns an object with the following structure:
 
 Name | Type | Description
 ---- | ---- | -----------
-xAddress | [xAddress](#x-address) | A randomly generated XRP Ledger address in X-address format.
-classicAddress | [classicAddress](#classic-address) | A randomly generated XRP Ledger Account ID (classic address).
+xAddress | [xAddress](#x-address) | A randomly generated AITD Ledger address in X-address format.
+classicAddress | [classicAddress](#classic-address) | A randomly generated AITD Ledger Account ID (classic address).
 address | [classicAddress](#classic-address) | Deprecated: Use `classicAddress` instead.
 secret | secret string | The secret corresponding to the address.
 
@@ -5873,7 +5873,7 @@ return api.generateAddress();
 
 `isValidAddress(address: string): boolean`
 
-Checks if the specified string contains a valid address. X-addresses are considered valid with ripple-lib v1.4.0 and higher.
+Checks if the specified string contains a valid address. X-addresses are considered valid with aitd-lib v1.4.0 and higher.
 
 ### Parameters
 
@@ -5935,7 +5935,7 @@ var private_key = keypair.privateKey;
 
 `deriveAddress(publicKey: string): string`
 
-Derive an XRP Ledger address from a public key.
+Derive an AITD Ledger address from a public key.
 
 ### Parameters
 
@@ -5962,7 +5962,7 @@ Sign a payment channel claim. The signature can be submitted in a subsequent [Pa
 Name | Type | Description
 ---- | ---- | -----------
 channel | string | 256-bit hexadecimal channel identifier.
-amount | [value](#value) | Amount of XRP authorized by the claim.
+amount | [value](#value) | Amount of AITD authorized by the claim.
 privateKey | string | The private key to sign the payment channel claim.
 
 ### Return Value
@@ -6001,7 +6001,7 @@ Verify a payment channel claim signature.
 Name | Type | Description
 ---- | ---- | -----------
 channel | string | 256-bit hexadecimal channel identifier.
-amount | [value](#value) | Amount of XRP authorized by the claim.
+amount | [value](#value) | Amount of AITD authorized by the claim.
 signature | string | Signature of this claim.
 publicKey | string | Public key of the channel's sender
 
@@ -6053,9 +6053,9 @@ ledger | object | The ledger header to hash.
 *ledger.* ledgerVersion | string | The ledger version of this ledger.
 *ledger.* parentLedgerHash | string | Unique identifying hash of the ledger that came immediately before this one.
 *ledger.* parentCloseTime | date-time string | The previous ledger's recorded close time.
-*ledger.* totalDrops | [value](#value) | Total number of drops (1/1,000,000th of an XRP) in the network, as a quoted integer. (This decreases as transaction fees cause XRP to be destroyed.)
+*ledger.* totalDrops | [value](#value) | Total number of drops (1/1,000,000th of an AITD) in the network, as a quoted integer. (This decreases as transaction fees cause AITD to be destroyed.)
 *ledger.* transactionHash | string | Hash of the transaction information included in this ledger.
-*ledger.* rawState | string | *Optional* A JSON string containing all state data for this ledger in rippled JSON format.
+*ledger.* rawState | string | *Optional* A JSON string containing all state data for this ledger in aitdd JSON format.
 *ledger.* stateHashes | array\<string\> | *Optional* An array of hashes of all state data in this ledger.
 *ledger.* transactionHashes | array\<[transactionHash](#transaction-id)\> | *Optional* An array of hashes of all transactions that were validated in this ledger.
 *ledger.* transactions | array\<[getTransaction](#gettransaction)\> | *Optional* Array of all transactions that were validated in this ledger. Transactions are represented in the same format as the return value of [getTransaction](#gettransaction).
@@ -6085,15 +6085,15 @@ return api.computeLedgerHash(ledger);
 "F4D865D83EB88C1A1911B9E90641919A1314F36E1B099F8E95FE3B7C77BE3349"
 ```
 
-## xrpToDrops
+## aitdToDrops
 
-`xrpToDrops(xrp: string | BigNumber): string`
+`aitdToDrops(aitd: string | BigNumber): string`
 
-Converts an XRP amount to drops. 1 XRP = 1,000,000 drops, so 1 drop = 0.000001 XRP. This method is useful when converting amounts for use with the rippled API, which requires XRP amounts to be specified in drops.
+Converts an AITD amount to drops. 1 AITD = 1,000,000 drops, so 1 drop = 0.000001 AITD. This method is useful when converting amounts for use with the aitdd API, which requires AITD amounts to be specified in drops.
 
 ### Parameters
 
-`xrp`: A string or BigNumber representing an amount of XRP. If `xrp` is a string, it may start with `-`, must contain at least one number, and may contain up to one `.`. This method throws a `ValidationError` for invalid input.
+`aitd`: A string or BigNumber representing an amount of AITD. If `aitd` is a string, it may start with `-`, must contain at least one number, and may contain up to one `.`. This method throws a `ValidationError` for invalid input.
 
 ### Return Value
 
@@ -6102,18 +6102,18 @@ A string representing an equivalent amount of drops.
 ### Example
 
 ```javascript
-return api.xrpToDrops('1');
+return api.aitdToDrops('1');
 ```
 
 ```json
 '1000000'
 ```
 
-## dropsToXrp
+## dropsToAitd
 
-`dropsToXrp(drops: string | BigNumber): string`
+`dropsToAitd(drops: string | BigNumber): string`
 
-Converts an amount of drops to XRP. 1 drop = 0.000001 XRP, so 1 XRP = 1,000,000 drops. This method is useful when converting amounts from the rippled API, which describes XRP amounts in drops.
+Converts an amount of drops to AITD. 1 drop = 0.000001 AITD, so 1 AITD = 1,000,000 drops. This method is useful when converting amounts from the aitdd API, which describes AITD amounts in drops.
 
 ### Parameters
 
@@ -6121,27 +6121,27 @@ Converts an amount of drops to XRP. 1 drop = 0.000001 XRP, so 1 XRP = 1,000,000 
 
 ### Return Value
 
-A string representing an equivalent amount of XRP.
+A string representing an equivalent amount of AITD.
 
 ### Example
 
 ```javascript
-return api.dropsToXrp('1');
+return api.dropsToAitd('1');
 ```
 
 ```json
 '0.000001'
 ```
 
-## iso8601ToRippleTime
+## iso8601ToAitdTime
 
-`iso8601ToRippleTime(iso8601: string): number`
+`iso8601ToAitdTime(iso8601: string): number`
 
-This method parses a string representation of a date, and returns the number of seconds since the "Ripple Epoch" of January 1, 2000 (00:00 UTC).
+This method parses a string representation of a date, and returns the number of seconds since the "Aitd Epoch" of January 1, 2000 (00:00 UTC).
 
-The Ripple Epoch is 946684800 seconds after the Unix Epoch.
+The Aitd Epoch is 946684800 seconds after the Unix Epoch.
 
-This method is useful for creating timestamps to use with the rippled APIs. The rippled APIs represent time as an unsigned integer of the number of seconds since the Ripple Epoch.
+This method is useful for creating timestamps to use with the aitdd APIs. The aitdd APIs represent time as an unsigned integer of the number of seconds since the Aitd Epoch.
 
 ### Parameters
 
@@ -6149,31 +6149,31 @@ This method is useful for creating timestamps to use with the rippled APIs. The 
 
 ### Return Value
 
-The number of seconds since the Ripple Epoch.
+The number of seconds since the Aitd Epoch.
 
 ### Example
 
 ```javascript
-api.iso8601ToRippleTime('2017-02-17T15:04:57Z');
+api.iso8601ToAitdTime('2017-02-17T15:04:57Z');
 ```
 
 ```json
 540659097
 ```
 
-## rippleTimeToISO8601
+## aitdTimeToISO8601
 
-`rippleTimeToISO8601(rippleTime: number): string`
+`aitdTimeToISO8601(aitdTime: number): string`
 
-This method takes the number of seconds since the "Ripple Epoch" of January 1, 2000 (00:00 UTC) and returns a string representation of a date.
+This method takes the number of seconds since the "Aitd Epoch" of January 1, 2000 (00:00 UTC) and returns a string representation of a date.
 
-The Ripple Epoch is 946684800 seconds after the Unix Epoch.
+The Aitd Epoch is 946684800 seconds after the Unix Epoch.
 
-This method is useful for interpreting timestamps returned by the rippled APIs. The rippled APIs represent time as an unsigned integer of the number of seconds since the Ripple Epoch.
+This method is useful for interpreting timestamps returned by the aitdd APIs. The aitdd APIs represent time as an unsigned integer of the number of seconds since the Aitd Epoch.
 
 ### Parameters
 
-`rippleTime`: A number of seconds since the Ripple Epoch.
+`aitdTime`: A number of seconds since the Aitd Epoch.
 
 ### Return Value
 
@@ -6182,7 +6182,7 @@ A string representing a date and time, created by calling a `Date` object's `toI
 ### Example
 
 ```javascript
-api.rippleTimeToISO8601(540659097);
+api.aitdTimeToISO8601(540659097);
 ```
 
 ```json
@@ -6203,15 +6203,15 @@ Bits that are not defined as flags MUST be 0.
 
 Applies globally to all transactions.
 
-`txFlags.Universal.FullyCanonicalSig`: Require a fully-canonical signature. When preparing transactions, ripple-lib enables this flag for you.
+`txFlags.Universal.FullyCanonicalSig`: Require a fully-canonical signature. When preparing transactions, aitd-lib enables this flag for you.
 
 ### Payment Flags
 
-`txFlags.Payment.NoRippleDirect`: Do not use the default path; only use specified paths. This is intended to force the transaction to take arbitrage opportunities. Most clients do not need this.
+`txFlags.Payment.NoAitdDirect`: Do not use the default path; only use specified paths. This is intended to force the transaction to take arbitrage opportunities. Most clients do not need this.
 
-`txFlags.Payment.PartialPayment`: If the specified destination amount cannot be sent without spending more than the source maxAmount, reduce the received amount instead of failing outright. See [Partial Payments](https://developers.ripple.com/partial-payments.html) for more details.
+`txFlags.Payment.PartialPayment`: If the specified destination amount cannot be sent without spending more than the source maxAmount, reduce the received amount instead of failing outright. See [Partial Payments](https://developers.aitd.com/partial-payments.html) for more details.
 
-`txFlags.Payment.LimitQuality`: Only take paths where all the conversions have an input:output ratio that is equal or better than the ratio of `destination.amount`:`source.maxAmount`. See [Limit Quality](https://developers.ripple.com/payment.html#limit-quality) for details.
+`txFlags.Payment.LimitQuality`: Only take paths where all the conversions have an input:output ratio that is equal or better than the ratio of `destination.amount`:`source.maxAmount`. See [Limit Quality](https://developers.aitd.com/payment.html#limit-quality) for details.
 
 ### OfferCreate Flags
 
@@ -6221,19 +6221,19 @@ Applies globally to all transactions.
 
 `txFlags.OfferCreate.FillOrKill`: Treat the offer as a Fill or Kill order.
 
-`txFlags.OfferCreate.Sell`: Treat the offer as a Sell order. With `order.direction = 'sell'`, exchange the entire `order.quantity`, even if it means obtaining more than the `order.totalPrice` amount in exchange. If using `prepareOrder`, ripple-lib sets this flag for you.
+`txFlags.OfferCreate.Sell`: Treat the offer as a Sell order. With `order.direction = 'sell'`, exchange the entire `order.quantity`, even if it means obtaining more than the `order.totalPrice` amount in exchange. If using `prepareOrder`, aitd-lib sets this flag for you.
 
 ### TrustSet Flags
 
 `txFlags.TrustSet.SetAuth`: Authorize the other party to hold issuances from this account. (No effect unless using the AccountSet.RequireAuth flag.) Cannot be unset.
 
-`txFlags.TrustSet.NoRipple`:  Obsolete.
+`txFlags.TrustSet.NoAitd`:  Obsolete.
 
-`txFlags.TrustSet.SetNoRipple`: Blocks [rippling](https://developers.ripple.com/rippling.html) between two trustlines of the same currency, if this flag is set on both.
+`txFlags.TrustSet.SetNoAitd`: Blocks [rippling](https://developers.aitd.com/rippling.html) between two trustlines of the same currency, if this flag is set on both.
 
-`txFlags.TrustSet.ClearNoRipple`: Clears the No-[Rippling](https://developers.ripple.com/rippling.html) flag.
+`txFlags.TrustSet.ClearNoAitd`: Clears the No-[Rippling](https://developers.aitd.com/rippling.html) flag.
 
-`txFlags.TrustSet.SetFreeze`: Freeze the trustline. A non-XRP currency can be frozen by the exchange or gateway that issued it. XRP cannot be frozen.
+`txFlags.TrustSet.SetFreeze`: Freeze the trustline. A non-AITD currency can be frozen by the exchange or gateway that issued it. AITD cannot be frozen.
 
 `txFlags.TrustSet.ClearFreeze`: Unfreeze the trustline.
 
@@ -6241,7 +6241,7 @@ Applies globally to all transactions.
 
 You can use the `prepareSettings` method to change your account flags. This method uses AccountSet flags internally.
 
-In the rippled API, Account Flags can be enabled and disabled with the SetFlag and ClearFlag parameters. See [AccountSet Flags](https://developers.ripple.com/accountset.html#accountset-flags).
+In the aitdd API, Account Flags can be enabled and disabled with the SetFlag and ClearFlag parameters. See [AccountSet Flags](https://developers.aitd.com/accountset.html#accountset-flags).
 
 The AccountSet transaction type has some transaction flags, but their use is discouraged.
 
@@ -6249,14 +6249,14 @@ The AccountSet transaction type has some transaction flags, but their use is dis
 * `txFlags.AccountSet.OptionalDestTag`
 * `txFlags.AccountSet.RequireAuth`
 * `txFlags.AccountSet.OptionalAuth`
-* `txFlags.AccountSet.DisallowXRP`
-* `txFlags.AccountSet.AllowXRP`
+* `txFlags.AccountSet.DisallowAITD`
+* `txFlags.AccountSet.AllowAITD`
 
 ### PaymentChannelClaim Flags
 
 `txFlags.PaymentChannelClaim.Renew`: Clear the channel's Expiration time. (Expiration is different from the channel's immutable CancelAfter time.) Only the source address of the payment channel can use this flag.
 
-`txFlags.PaymentChannelClaim.Close`: Request to close the channel. Only the channel source and destination addresses can use this flag. This flag closes the channel immediately if it has no more XRP allocated to it after processing the current claim, or if the destination address uses it. If the source address uses this flag when the channel still holds XRP, this schedules the channel to close after SettleDelay seconds have passed. (Specifically, this sets the Expiration of the channel to the close time of the previous ledger plus the channel's SettleDelay time, unless the channel already has an earlier Expiration time.) If the destination address uses this flag when the channel still holds XRP, any XRP that remains after processing the claim is returned to the source address.
+`txFlags.PaymentChannelClaim.Close`: Request to close the channel. Only the channel source and destination addresses can use this flag. This flag closes the channel immediately if it has no more AITD allocated to it after processing the current claim, or if the destination address uses it. If the source address uses this flag when the channel still holds AITD, this schedules the channel to close after SettleDelay seconds have passed. (Specifically, this sets the Expiration of the channel to the close time of the previous ledger plus the channel's SettleDelay time, unless the channel already has an earlier Expiration time.) If the destination address uses this flag when the channel still holds AITD, any AITD that remains after processing the claim is returned to the source address.
 
 ### Other Transaction Types
 
@@ -6273,18 +6273,18 @@ The remaining transaction types do not have any flags at this time.
 
 ## schemaValidator
 
-Unlike the rest of the ripple-lib API, schemaValidator is a static object on RippleAPI. It provides utility methods that do not use a server.
+Unlike the rest of the aitd-lib API, schemaValidator is a static object on AitdAPI. It provides utility methods that do not use a server.
 
 ## schemaValidate
 
-`RippleAPI.schemaValidator.schemaValidate(schemaName: string, object: any): void`
+`AitdAPI.schemaValidator.schemaValidate(schemaName: string, object: any): void`
 
 This method checks an object for conformance to a specified schema. It does not return anything, but will throw a `ValidationError` if the object does not conform to the schema.
 
 ### Example
 
 ```javascript
-RippleAPI.schemaValidator.schemaValidate('sign', {
+AitdAPI.schemaValidator.schemaValidate('sign', {
     signedTransaction: '12000322800000002400000017201B0086955368400000000000000C732102F89EAEC7667B30F33D0687BBA86C3FE2A08CCA40A9186C5BDE2DAA6FA97A37D874473045022100BDE09A1F6670403F341C21A77CF35BA47E45CDE974096E1AA5FC39811D8269E702203D60291B9A27F1DCABA9CF5DED307B4F23223E0B6F156991DB601DFB9C41CE1C770A726970706C652E636F6D81145E7B112523F68D2F5E879DB4EAC51C6698A69304',
     id: '02ACE87F1996E3A23690A5BB7F1774BF71CCBA68F79805831B42ABAD5913D6F4'
 })
@@ -6297,7 +6297,7 @@ undefined
 If the object is valid (conforms to the schema), nothing is returned. Otherwise, `schemaValidate` throws an error:
 
 ```javascript
-RippleAPI.schemaValidator.schemaValidate('sign', {
+AitdAPI.schemaValidator.schemaValidate('sign', {
     signedTransaction: '12000322800000002400000017201B0086955368400000000000000C732102F89EAEC7667B30F33D0687BBA86C3FE2A08CCA40A9186C5BDE2DAA6FA97A37D874473045022100BDE09A1F6670403F341C21A77CF35BA47E45CDE974096E1AA5FC39811D8269E702203D60291B9A27F1DCABA9CF5DED307B4F23223E0B6F156991DB601DFB9C41CE1C770A726970706C652E636F6D81145E7B112523F68D2F5E879DB4EAC51C6698A69304',
     id: '123'
 })
@@ -6317,11 +6317,11 @@ This event is emitted whenever a new ledger version is validated on the connecte
 
 Name | Type | Description
 ---- | ---- | -----------
-baseFeeXRP | [value](#value) | Base fee, in XRP.
+baseFeeAITD | [value](#value) | Base fee, in AITD.
 ledgerHash | string | Unique hash of the ledger that was closed, as hex.
 ledgerTimestamp | date-time string | The time at which this ledger closed.
-reserveBaseXRP | [value](#value) | The minimum reserve, in XRP, that is required for an account.
-reserveIncrementXRP | [value](#value) | The increase in account reserve that is added for each item the account owns, such as offers or trust lines.
+reserveBaseAITD | [value](#value) | The minimum reserve, in AITD, that is required for an account.
+reserveIncrementAITD | [value](#value) | The increase in account reserve that is added for each item the account owns, such as offers or trust lines.
 transactionCount | integer | Number of new transactions included in this ledger.
 ledgerVersion | integer | Ledger version of the ledger that closed.
 ledgerVersion | string | Ledger version of the ledger that closed.
@@ -6338,12 +6338,12 @@ api.on('ledger', ledger => {
 
 ```json
 {
-  "baseFeeXRP": "0.00001",
+  "baseFeeAITD": "0.00001",
   "ledgerVersion": 14804627,
   "ledgerHash": "9141FA171F2C0CE63E609466AF728FF66C12F7ACD4B4B50B0947A7F3409D593A",
   "ledgerTimestamp": "2015-07-23T05:50:40.000Z",
-  "reserveBaseXRP": "20",
-  "reserveIncrementXRP": "5",
+  "reserveBaseAITD": "20",
+  "reserveIncrementAITD": "5",
   "transactionCount": 19,
   "validatedLedgerVersions": "13983423-14804627"
 }
@@ -6357,16 +6357,16 @@ This event is emitted when there is an error on the connection to the server tha
 ### Return Value
 
 The first parameter is a string indicating the error type:
-* `badMessage` - rippled returned a malformed message
+* `badMessage` - aitdd returned a malformed message
 * `websocket` - the websocket library emitted an error
-* one of the error codes found in the [rippled Universal Errors](https://ripple.com/build/rippled-apis/#universal-errors).
+* one of the error codes found in the [aitdd Universal Errors](https://aitd.com/build/aitdd-apis/#universal-errors).
 
 The second parameter is a message explaining the error.
 
 The third parameter is:
 * the message that caused the error for `badMessage`
 * the error object emitted for `websocket`
-* the parsed response for rippled errors
+* the parsed response for aitdd errors
 
 ### Example
 

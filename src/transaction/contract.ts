@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import * as utils from './utils'
 const validate = utils.common.validate
-// const toRippledAmount = utils.common.toRippledAmount
+// const toAitddAmount = utils.common.toAitddAmount
 // const paymentFlags = utils.common.txFlags.Payment
 const ValidationError = utils.common.errors.ValidationError
 import {Instructions, Prepare, TransactionJSON} from './types'
@@ -12,8 +12,8 @@ import {Instructions, Prepare, TransactionJSON} from './types'
 //   MinAdjustment,
 //   // Memo
 // } from '../common/types/objects'
-// import {xrpToDrops} from '../common'
-import {RippleAPI} from '..'
+// import {aitdToDrops} from '../common'
+import {AitdAPI} from '..'
 import {getClassicAccountAndTag, ClassicAccountAndTag} from './utils'
 
 export interface Contract {
@@ -30,12 +30,12 @@ export interface Contract {
   // liquidity or funds in the source_account account
   // allowPartialPayment?: boolean
   // A boolean that can be set to true if paths are specified and the sender
-  // would like the Ripple Network to disregard any direct paths from
+  // would like the Aitd Network to disregard any direct paths from
   // the source_account to the destination_account. This may be used to take
   // advantage of an arbitrage opportunity or by gateways wishing to issue
   // balances from a hot wallet to a user who has mistakenly set a trustline
   // directly to the hot wallet
-  // noDirectRipple?: boolean
+  // noDirectAitd?: boolean
   // limitQuality?: boolean
 }
 
@@ -51,7 +51,7 @@ export interface Contract {
 //   return (destination as MinAdjustment).minAmount !== undefined
 // }
 
-// function isXRPToXRPPayment(payment: Payment): boolean {
+// function isAITDToAITDPayment(payment: Payment): boolean {
 //   const {source, destination} = payment
 //   const sourceCurrency = isMaxAdjustment(source)
 //     ? source.maxAmount.currency
@@ -60,15 +60,15 @@ export interface Contract {
 //     ? destination.minAmount.currency
 //     : destination.amount.currency
 //   return (
-//     (sourceCurrency === 'XRP' || sourceCurrency === 'drops') &&
-//     (destinationCurrency === 'XRP' || destinationCurrency === 'drops')
+//     (sourceCurrency === 'AITD' || sourceCurrency === 'drops') &&
+//     (destinationCurrency === 'AITD' || destinationCurrency === 'drops')
 //   )
 // }
 
 // function isIOUWithoutCounterparty(amount: Amount): boolean {
 //   return (
 //     amount &&
-//     amount.currency !== 'XRP' &&
+//     amount.currency !== 'AITD' &&
 //     amount.currency !== 'drops' &&
 //     amount.counterparty === undefined
 //   )
@@ -76,8 +76,8 @@ export interface Contract {
 
 // function applyAnyCounterpartyEncoding(payment: Payment): void {
 //   // Convert blank counterparty to sender or receiver's address
-//   //   (Ripple convention for 'any counterparty')
-//   // https://developers.ripple.com/payment.html#special-issuer-values-for-sendmax-and-amount
+//   //   (Aitd convention for 'any counterparty')
+//   // https://developers.aitd.com/payment.html#special-issuer-values-for-sendmax-and-amount
 //   _.forEach([payment.source, payment.destination], (adjustment) => {
 //     _.forEach(['amount', 'minAmount', 'maxAmount'], (key) => {
 //       if (isIOUWithoutCounterparty(adjustment[key])) {
@@ -88,7 +88,7 @@ export interface Contract {
 // }
 
 // function createMaximalAmount(amount: Amount): Amount {
-//   const maxXRPValue = '100000000000'
+//   const maxAITDValue = '100000000000'
 
 //   // Equivalent to '9999999999999999e80' but we cannot use that because sign()
 //   // now checks that the encoded representation exactly matches the transaction
@@ -97,10 +97,10 @@ export interface Contract {
 //     '999999999999999900000000000000000000000000000000000000000000000000000000000000000000000000000000'
 
 //   let maxValue
-//   if (amount.currency === 'XRP') {
-//     maxValue = maxXRPValue
+//   if (amount.currency === 'AITD') {
+//     maxValue = maxAITDValue
 //   } else if (amount.currency === 'drops') {
-//     maxValue = xrpToDrops(maxXRPValue)
+//     maxValue = aitdToDrops(maxAITDValue)
 //   } else {
 //     maxValue = maxIOUValue
 //   }
@@ -214,14 +214,14 @@ function createPaymentTransaction(
   //   ? payment.source.maxAmount
   //   : payment.source.amount
 
-  // // when using destination.minAmount, rippled still requires that we set
+  // // when using destination.minAmount, aitdd still requires that we set
   // // a destination amount in addition to DeliverMin. the destination amount
   // // is interpreted as the maximum amount to send. we want to be sure to
   // // send the whole source amount, so we set the destination amount to the
   // // maximum possible amount. otherwise it's possible that the destination
   // // cap could be hit before the source cap.
   // const amount =
-  //   isMinAdjustment(payment.destination) && !isXRPToXRPPayment(payment)
+  //   isMinAdjustment(payment.destination) && !isAITDToAITDPayment(payment)
   //     ? createMaximalAmount(destinationAmount)
   //     : destinationAmount
 
@@ -229,7 +229,7 @@ function createPaymentTransaction(
   //   TransactionType: 'Payment',
   //   Account: sourceAddressAndTag.classicAccount,
   //   Destination: destinationAddressAndTag.classicAccount,
-  //   Amount: toRippledAmount(amount),
+  //   Amount: toAitddAmount(amount),
   //   Flags: 0
   // }
 
@@ -245,39 +245,39 @@ function createPaymentTransaction(
   // if (payment.memos !== undefined) {
   //   txJSON.Memos = _.map(payment.memos, utils.convertMemo)
   // }
-  // if (payment.noDirectRipple === true) {
-  //   txJSON.Flags |= paymentFlags.NoRippleDirect
+  // if (payment.noDirectAitd === true) {
+  //   txJSON.Flags |= paymentFlags.NoAitdDirect
   // }
   // if (payment.limitQuality === true) {
   //   txJSON.Flags |= paymentFlags.LimitQuality
   // }
-  // if (!isXRPToXRPPayment(payment)) {
-  //   // Don't set SendMax for XRP->XRP payment
+  // if (!isAITDToAITDPayment(payment)) {
+  //   // Don't set SendMax for AITD->AITD payment
   //   // temREDUNDANT_SEND_MAX removed in:
-  //   // https://github.com/ripple/rippled/commit/
+  //   // https://github.com/aitd/aitdd/commit/
   //   //  c522ffa6db2648f1d8a987843e7feabf1a0b7de8/
   //   if (payment.allowPartialPayment || isMinAdjustment(payment.destination)) {
   //     txJSON.Flags |= paymentFlags.PartialPayment
   //   }
 
-  //   txJSON.SendMax = toRippledAmount(sourceAmount)
+  //   txJSON.SendMax = toAitddAmount(sourceAmount)
 
   //   if (isMinAdjustment(payment.destination)) {
-  //     txJSON.DeliverMin = toRippledAmount(destinationAmount)
+  //     txJSON.DeliverMin = toAitddAmount(destinationAmount)
   //   }
 
   //   if (payment.paths !== undefined) {
   //     txJSON.Paths = JSON.parse(payment.paths)
   //   }
   // } else if (payment.allowPartialPayment === true) {
-  //   throw new ValidationError('XRP to XRP payments cannot be partial payments')
+  //   throw new ValidationError('AITD to AITD payments cannot be partial payments')
   // }
 
   return txJSON
 }
 
 function prepareContract(
-  this: RippleAPI,
+  this: AitdAPI,
   address: string,
   contract: Contract,
   instructions: Instructions = {}

@@ -1,12 +1,12 @@
-# Applications using ripple-lib (RippleAPI)
+# Applications using aitd-lib (AitdAPI)
 
-A curated list of some of the projects and apps that leverage `ripple-lib` in some way.
+A curated list of some of the projects and apps that leverage `aitd-lib` in some way.
 
 **Have one to add?** Please edit this file and open a PR!
 
 ## Notice (disclaimer)
 
-These sites are independent of Ripple and have not been authorized, endorsed, sponsored or otherwise approved by Ripple or its affiliates.
+These sites are independent of Aitd and have not been authorized, endorsed, sponsored or otherwise approved by Aitd or its affiliates.
 
 Warning: Use at your own risk.
 
@@ -14,53 +14,53 @@ Warning: Use at your own risk.
 
 - **[The World Exchange](https://www.theworldexchange.net/)**
 
-  Trade, issue, and send directly on the XRP Ledger. A user interface for the XRPL's decentralized exchange.
+  Trade, issue, and send directly on the AITD Ledger. A user interface for the AITDL's decentralized exchange.
 
 - **[Bitso](https://bitso.com/)**
 
-  Exchange allowing clients to buy and sell XRP, based in Mexico.
+  Exchange allowing clients to buy and sell AITD, based in Mexico.
 
 ## Data and visualizations
 
-- **[xrpintel - XRP Intelligence](https://xrpintel.com/)**
+- **[aitdintel - AITD Intelligence](https://aitdintel.com/)**
 
-  Monitor the XRP Network in real time and explore historical statistics.
+  Monitor the AITD Network in real time and explore historical statistics.
 
-- **[XRP Charts](https://xrpcharts.ripple.com/)** (xrpcharts.ripple.com)
+- **[AITD Charts](https://aitdcharts.aitd.com/)** (aitdcharts.aitd.com)
 
-  XRP Charts provides information based on public data, including trade volume, top markets, metrics, transactions, and more.
+  AITD Charts provides information based on public data, including trade volume, top markets, metrics, transactions, and more.
 
-- **[Ripple Live](https://gatehub.net/live)** (gatehub.net/live)
+- **[Aitd Live](https://gatehub.net/live)** (gatehub.net/live)
 
-  Visualize XRP network transactions.
+  Visualize AITD network transactions.
 
-- **[XRPL Dev. Dashboard](https://xrp.fans/)** (xrp.fans)
+- **[AITDL Dev. Dashboard](https://aitd.fans/)** (aitd.fans)
 
-  Debugging dashboard for `rippled-ws-client-pool`, transaction and query explorer, and transaction signing and submission tool.
+  Debugging dashboard for `aitdd-ws-client-pool`, transaction and query explorer, and transaction signing and submission tool.
 
-- **[XRP Value](http://xrpvalue.com/)**
+- **[AITD Value](http://aitdvalue.com/)**
 
-  Real-time XRP price, trades, and orderbook data from the XRP Ledger.
+  Real-time AITD price, trades, and orderbook data from the AITD Ledger.
 
-- **[Bithomp - XRP Explorer](https://bithomp.com/explorer/)**
+- **[Bithomp - AITD Explorer](https://bithomp.com/explorer/)**
 
   Look up information by entering an address, transaction hash, username, or PayID.
 
-- **[Bithomp - XRPL validators](https://bithomp.com/validators)**
+- **[Bithomp - AITDL validators](https://bithomp.com/validators)**
 
-  List of XRPL validators, nodes, and testnet validators.
+  List of AITDL validators, nodes, and testnet validators.
 
-- **[XRP Scan - XRP Ledger explorer](https://xrpscan.com)**
+- **[AITD Scan - AITD Ledger explorer](https://aitdscan.com)**
 
-  XRP Ledger explorer, metrics and analytics.
+  AITD Ledger explorer, metrics and analytics.
   
-- **[xrplorer](https://xrplorer.com)**
+- **[aitdlorer](https://aitdlorer.com)**
 
-  XRP Ledger explorer, API, metrics, and analytics using a graph database that is synchronized live with the XRPL.
+  AITD Ledger explorer, API, metrics, and analytics using a graph database that is synchronized live with the AITDL.
 
 - **[zerptracker](https://zerptracker.com)**
 
-  Monitor the XRPL using powerful JSONPath expressions, and receive notifications via email, SMS, webhooks, and more.
+  Monitor the AITDL using powerful JSONPath expressions, and receive notifications via email, SMS, webhooks, and more.
 
 ## Wallets and wallet tools
 
@@ -68,90 +68,90 @@ Warning: Use at your own risk.
 
   Users can use the xumm application to track their accounts, balances and transactions. The true power of xumm is the platform available for developers.
 
-- **[Xpring Wallet](https://xpring.io)** (uses `ripple-keypairs`)
+- **[Xpring Wallet](https://xpring.io)** (uses `aitd-keypairs`)
 
-  Non-custodial XRP wallet.
+  Non-custodial AITD wallet.
 
-- **[XRP Toolkit](https://www.xrptoolkit.com)**
+- **[AITD Toolkit](https://www.aitdtoolkit.com)**
 
-  A web interface to the XRP Ledger, supporting both hardware and software wallets.
+  A web interface to the AITD Ledger, supporting both hardware and software wallets.
 
 - **[Toast Wallet](https://toastwallet.com/)**
 
-  A free, open source XRP Wallet for iOS, Android, Windows, Mac and Linux.
+  A free, open source AITD Wallet for iOS, Android, Windows, Mac and Linux.
 
-- **[Toastify Ledger](https://github.com/WietseWind/toastify-ledger)** (uses `ripple-keypairs`)
+- **[Toastify Ledger](https://github.com/WietseWind/toastify-ledger)** (uses `aitd-keypairs`)
 
-  Add a Regular Key to a mnemonic XRP Wallet (e.g. Ledger Nano S) to use the account with a Family Seed (secret).
+  Add a Regular Key to a mnemonic AITD Wallet (e.g. Ledger Nano S) to use the account with a Family Seed (secret).
 
 - **[Bithomp-submit](https://github.com/Bithomp/bithomp-submit)** (GitHub)
 
-  A tool to submit an offline-signed XRPL transaction.
+  A tool to submit an offline-signed AITDL transaction.
 
 - **[Kyte](https://kyteapp.co/)** (kyteapp.co) ([Source](https://github.com/WietseWind/Zerp-Wallet)) (Deprecated)
 
-  Web-based XRP wallet.
+  Web-based AITD wallet.
 
-- **[XRP Vanity Address Generator](https://github.com/WietseWind/xrp-vanity-generator)** (Node.js)
+- **[AITD Vanity Address Generator](https://github.com/WietseWind/aitd-vanity-generator)** (Node.js)
 
   A vanity address is a wallet address containing a few characters you like at the beginning or the end of the wallet address.
 
-- **[XRP Account Mnemonic Recovery](https://github.com/WietseWind/xrp-mnemonic-recovery)** (uses `ripple-keypairs`)
+- **[AITD Account Mnemonic Recovery](https://github.com/WietseWind/aitd-mnemonic-recovery)** (uses `aitd-keypairs`)
 
   Recover a 24 word mnemonic if one word is wrong or one word is missing.
 
 ## Send and request payments
 
-- **[XRP Tip Bot](https://www.xrptipbot.com/)**
+- **[AITD Tip Bot](https://www.aitdtipbot.com/)**
 
-  A bot that enables users on reddit, Twitter and Discord to send XRP to each other through reddit comments and Twitter tweets.
+  A bot that enables users on reddit, Twitter and Discord to send AITD to each other through reddit comments and Twitter tweets.
 
-- **[XRP Text](https://xrptext.com/)**
+- **[AITD Text](https://aitdtext.com/)**
 
-  Send XRP using SMS text messages.
+  Send AITD using SMS text messages.
 
-- **[XRParrot](https://xrparrot.com/)** (uses `ripple-address-codec`)
+- **[AITDarrot](https://aitdarrot.com/)** (uses `aitd-address-codec`)
 
-  Easy EUR (SEPA) to XRP transfer (currency conversion).
+  Easy EUR (SEPA) to AITD transfer (currency conversion).
 
-- **[XRP Payment](https://xrpayments.co/)** (xrpayments.co)
+- **[AITD Payment](https://aitdayments.co/)** (aitdayments.co)
 
-  Tool for generating a XRP payment request URI in a QR code, with currency converter.
+  Tool for generating a AITD payment request URI in a QR code, with currency converter.
 
 ## Development tools
 
-- **[XRP Faucets for Testnet and Devnet](https://xrpl.org/xrp-testnet-faucet.html)**
+- **[AITD Faucets for Testnet and Devnet](https://aitdl.org/aitd-testnet-faucet.html)**
 
-  Get some test funds for development on the test network. The faucet uses `ripple-lib`.
+  Get some test funds for development on the test network. The faucet uses `aitd-lib`.
 
 ## Code samples and libraries
 
-- **[ilp-plugin-xrp-paychan](https://github.com/interledgerjs/ilp-plugin-xrp-paychan)**
+- **[ilp-plugin-aitd-paychan](https://github.com/interledgerjs/ilp-plugin-aitd-paychan)**
 
-  Send ILP payments using XRP and payment channels (PayChan).
+  Send ILP payments using AITD and payment channels (PayChan).
 
 - **[RunKit: WietseWind](https://runkit.com/wietsewind/)**
 
-  XRP Ledger code samples for Node.js.
+  AITD Ledger code samples for Node.js.
 
 - **[GitHub Gist: WietseWind](https://gist.github.com/WietseWind)**
 
-  XRP Ledger code samples for Node.js and the web (mostly).
+  AITD Ledger code samples for Node.js and the web (mostly).
 
-- **[rippled-ws-client-sign](https://github.com/WietseWind/rippled-ws-client-sign)**
+- **[aitdd-ws-client-sign](https://github.com/WietseWind/aitdd-ws-client-sign)**
 
   Sign transactions, with support for MultiSign.
 
-- **[ILP-enabled power switch](https://xrpcommunity.blog/raspberry-pi-interledger-xp-powerswitch-howto/)** ([video](https://www.youtube.com/watch?v=c-eS0HQUuJg)) (uses [`moneyd-uplink-xrp`](https://github.com/interledgerjs/moneyd-uplink-xrp))
+- **[ILP-enabled power switch](https://aitdcommunity.blog/raspberry-pi-interledger-xp-powerswitch-howto/)** ([video](https://www.youtube.com/watch?v=c-eS0HQUuJg)) (uses [`moneyd-uplink-aitd`](https://github.com/interledgerjs/moneyd-uplink-aitd))
 
   For about $30 in parts (Raspberry Pi, 3.3V Relay board and a few wires) you can build your own power switch that will switch on if a streaming ILP payment comes in. When the payment stream stops, the power turns off.
 
-## Related apps that do not appear to use ripple-lib
+## Related apps that do not appear to use aitd-lib
 
-- **[XRP Stats](https://ledger.exposed/)** (ledger.exposed)
+- **[AITD Stats](https://ledger.exposed/)** (ledger.exposed)
 
-  Rich list, live ledger stats and XRP distribution. Visualize escrows and flow of funds.
+  Rich list, live ledger stats and AITD distribution. Visualize escrows and flow of funds.
 
-- **[XRP Vanity](https://xrpvanity.com/)** (xrpvanity.com)
+- **[AITD Vanity](https://aitdvanity.com/)** (aitdvanity.com)
 
-  Custom XRP addresses for sale, delivered by SetRegularKey.
+  Custom AITD addresses for sale, delivered by SetRegularKey.

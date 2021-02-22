@@ -4,7 +4,7 @@
 
 Returns open orders for the specified account. Open orders are orders that have not yet been fully executed and are still in the order book.
 
-**Breaking change:** In ripple-lib 1.1.0 and earlier, orders returned by this method were not sorted correctly. Orders are now sorted correctly, from best to worst.
+**Breaking change:** In aitd-lib 1.1.0 and earlier, orders returned by this method were not sorted correctly. Orders are now sorted correctly, from best to worst.
 
 **See also:** An alternative way to get orderbooks is with `request` and [`formatBidsAndAsks`](#formatbidsandasks).
 
@@ -20,7 +20,7 @@ This method returns a promise that resolves with an object with the following st
 
 **Raw order data:** The response includes a `data` property containing the raw order data. This may include `owner_funds`, `Flags`, and other fields.
 
-For details, see the rippled method [book_offers](https://ripple.com/build/rippled-apis/#book-offers).
+For details, see the aitdd method [book_offers](https://aitd.com/build/aitdd-apis/#book-offers).
 
 ### Example
 

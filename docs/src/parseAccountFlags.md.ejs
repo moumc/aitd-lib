@@ -2,7 +2,7 @@
 
 `parseAccountFlags(Flags: number): object`
 
-Parse an `AccountRoot` object's [`Flags`](https://developers.ripple.com/accountroot.html#accountroot-flags).
+Parse an `AccountRoot` object's [`Flags`](https://developers.aitd.com/accountroot.html#accountroot-flags).
 
 ### Parameters
 
@@ -10,7 +10,7 @@ This method takes one parameter, the AccountRoot `Flags` number to parse. Note t
 
 ### Return Value
 
-This method returns an object with containing a key for each AccountRoot flag known to this version of RippleAPI. Each flag has a boolean value of `true` or `false`.
+This method returns an object with containing a key for each AccountRoot flag known to this version of AitdAPI. Each flag has a boolean value of `true` or `false`.
 
 ### Example
 
@@ -26,10 +26,10 @@ console.log(JSON.stringify(flags, null, 2))
   "requireDestinationTag": false,
   "requireAuthorization": false,
   "depositAuth": true,
-  "disallowIncomingXRP": false,
+  "disallowIncomingAITD": false,
   "disableMasterKey": false,
   "noFreeze": false,
   "globalFreeze": false,
-  "defaultRipple": false
+  "defaultAitd": false
 }
 ```

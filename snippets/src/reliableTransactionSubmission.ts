@@ -1,5 +1,5 @@
 import {
-  RippleAPI,
+  AitdAPI,
   AccountInfoResponse,
   LedgerClosedEvent
 } from '../../dist/npm'
@@ -20,23 +20,23 @@ import https = require('https')
  *    - Listen for transaction status: scan all validated transactions to see if our transactions are among them
  * 3) What do we do when a transaction fails? It is possible to implement retry logic, but caution is advised. Note that there are a few ways for a transaction to fail:
  *    A) `tec`: The transaction was included in a ledger but only claimed the transaction fee
- *    B) `tesSUCCESS` but unexpected result: The transaction was successful but did not have the expected result. This generally does not occur for XRP-to-XRP payments
+ *    B) `tesSUCCESS` but unexpected result: The transaction was successful but did not have the expected result. This generally does not occur for AITD-to-AITD payments
  *    C) The transaction was not, and never will be, included in a validated ledger [3C]
  *
  * References:
- * - https://xrpl.org/reliable-transaction-submission.html
- * - https://xrpl.org/send-xrp.html
- * - https://xrpl.org/look-up-transaction-results.html
- * - https://xrpl.org/get-started-with-rippleapi-for-javascript.html
- * - https://xrpl.org/monitor-incoming-payments-with-websocket.html
+ * - https://aitdl.org/reliable-transaction-submission.html
+ * - https://aitdl.org/send-aitd.html
+ * - https://aitdl.org/look-up-transaction-results.html
+ * - https://aitdl.org/get-started-with-aitdapi-for-javascript.html
+ * - https://aitdl.org/monitor-incoming-payments-with-websocket.html
  *
  * For the implementation in this example, we have made the following decisions:
- * 1) The script will choose the account sequence and LastLedgerSequence numbers automatically. We allow ripple-lib to choose the fee.
+ * 1) The script will choose the account sequence and LastLedgerSequence numbers automatically. We allow aitd-lib to choose the fee.
  *    Payments are defined upfront, and idempotency is not needed. If the script is run a second time, duplicate payments will result.
  * 2) We will listen for notification that a new validated ledger has been found, and poll for transaction status at that time.
  *    Futhermore, as a precaution, we will wait until the server is 3 ledgers past the transaction's LastLedgerSequence
  *    (with the transaction nowhere to be seen) before deciding that it has definitively failed per [3C]
- * 3) Transactions will not be automatically retried. Transactions are limited to XRP-to-XRP payments and cannot "succeed" in an unexpected way.
+ * 3) Transactions will not be automatically retried. Transactions are limited to AITD-to-AITD payments and cannot "succeed" in an unexpected way.
  */
 reliableTransactionSubmissionExample()
 
@@ -44,7 +44,7 @@ async function reliableTransactionSubmissionExample() {
   /**
    * Array of payments to execute.
    *
-   * For brevity, these are XRP-to-XRP payments, taking a source, destination, and an amount in drops.
+   * For brevity, these are AITD-to-AITD payments, taking a source, destination, and an amount in drops.
    *
    * The script will attempt to make all of these payments as quickly as possible, and report the final status of each. Transactions that fail are NOT retried.
    */
@@ -68,7 +68,7 @@ async function reliableTransactionSubmissionExample() {
 async function performPayments(payments) {
   const finalResults = []
   const txFinalizedPromises = []
-  const api = new RippleAPI({server: 'wss://s.altnet.rippletest.net:51233'})
+  const api = new AitdAPI({server: 'wss://s.altnet.aitdtest.net:51233'})
   await api.connect()
 
   for (let i = 0; i < payments.length; i++) {
@@ -117,7 +117,7 @@ async function performPayments(payments) {
 
           if (event.ledger_index > preparedPayment.instructions.maxLedgerVersion + 3) {
             // Assumptions:
-            // - We are still connected to the same rippled server
+            // - We are still connected to the same aitdd server
             // - No ledger gaps occurred
             // - All ledgers between the time we submitted the tx and now have been checked for the tx
             status = {
@@ -165,7 +165,7 @@ async function generateTestnetAccount(): Promise<{
   balance: number
  }> {
   const options = {
-    hostname: 'faucet.altnet.rippletest.net',
+    hostname: 'faucet.altnet.aitdtest.net',
     port: 443,
     path: '/accounts',
     method: 'POST'

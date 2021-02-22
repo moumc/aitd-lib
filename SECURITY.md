@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-This table shows which versions of ripple-lib are currently supported with security updates:
+This table shows which versions of aitd-lib are currently supported with security updates:
 
 | Version | Supported              |
 | ------- | ---------------------- |
@@ -23,7 +23,7 @@ Security is a top priority. But no matter how much effort we put into security, 
 
 If you discover a security vulnerability, please use the following means of communications to report it to us:
 
-- Report the security issue to bugs@ripple.com
-- [Ripple Bug Bounty](https://ripple.com/bug-bounty/)
+- Report the security issue to bugs@aitd.com
+- [Aitd Bug Bounty](https://aitd.com/bug-bounty/)
 
 Your efforts to responsibly disclose your findings are sincerely appreciated and will be taken into account to acknowledge your contributions.

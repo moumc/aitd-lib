@@ -1,16 +1,16 @@
 {
   "name": "aitd-lib",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "ISC",
   "description": "A TypeScript/JavaScript API for interacting with the AITD Ledger in Node.js and the browser",
   "files": [
     "dist/npm/*",
-    "build/ripple-latest-min.js",
-    "build/ripple-latest.js"
+    "build/aitd-latest-min.js",
+    "build/aitd-latest.js"
   ],
   "main": "dist/npm/",
-  "unpkg": "build/ripple-latest-min.js",
-  "jsdelivr": "build/ripple-latest-min.js",
+  "unpkg": "build/aitd-latest-min.js",
+  "jsdelivr": "build/aitd-latest-min.js",
   "types": "dist/npm/index.d.ts",
   "browser": {
     "ws": "./dist/npm/common/wswrapper.js",
@@ -27,10 +27,10 @@
     "jsonschema": "1.2.2",
     "lodash": "^4.17.4",
     "lodash.isequal": "^4.5.0",
-    "aitd-address-codec": "^1.0.2",
-    "aitd-binary-codec": "^1.0.1",
-    "aitd-keypairs": "^1.0.0",
-    "ripple-lib-transactionparser": "0.8.2",
+    "aitd-address-codec": "^1.0.3",
+    "aitd-binary-codec": "^1.0.2",
+    "aitd-keypairs": "^1.0.1",
+    "aitd-lib-transactionparser": "0.0.2",
     "ws": "^7.2.0"
   },
   "devDependencies": {
@@ -67,7 +67,7 @@
     "analyze": "yarn build:web --analyze",
     "watch": "yarn build:lib --watch",
     "clean": "rm -rf dist/npm",
-    "doctoc": "doctoc docs/index.md --title '# RippleAPI Reference' --github --maxlevel 2",
+    "doctoc": "doctoc docs/index.md --title '# AitdAPI Reference' --github --maxlevel 2",
     "docgen": "node --harmony scripts/build_docs.js",
     "prepublish": "yarn clean && yarn build",
     "test": "TS_NODE_PROJECT=src/tsconfig.json nyc mocha --exit",

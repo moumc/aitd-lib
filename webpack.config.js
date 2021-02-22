@@ -13,9 +13,9 @@ function getDefaultConfiguration() {
   }],
   entry: './dist/npm/index.js',
   output: {
-    library: 'ripple',
+    library: 'aitd',
     path: path.join(__dirname, 'build/'),
-    filename: `ripple-lib.default.js`,
+    filename: `aitd-lib.default.js`,
   },
   plugins: [
     new webpack.NormalModuleReplacementPlugin(/^ws$/, './wswrapper'),
@@ -44,13 +44,13 @@ module.exports = [
   function(env, argv) {
     const config = getDefaultConfiguration();
     config.mode = 'development';
-    config.output.filename = `ripple-latest.js`;
+    config.output.filename = `aitd-latest.js`;
     return config;
   },
   function(env, argv) {
     const config = getDefaultConfiguration();
     config.mode = 'production';
-    config.output.filename = `ripple-latest-min.js`;
+    config.output.filename = `aitd-latest-min.js`;
     if (process.argv.includes('--analyze')) {
       config.plugins.push(new BundleAnalyzerPlugin());
     }

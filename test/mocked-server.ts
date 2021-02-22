@@ -1,5 +1,5 @@
 const port = 34371
-import {createMockRippled} from './mock-rippled'
+import {createMockAitdd} from './mock-aitdd'
 
 function main() {
   if (global.describe) {
@@ -7,9 +7,9 @@ function main() {
     return
   }
   console.log('starting server on port ' + port)
-  createMockRippled(port)
+  createMockAitdd(port)
   console.log('starting server on port ' + String(port + 1))
-  createMockRippled(port + 1)
+  createMockAitdd(port + 1)
 }
 
 main()

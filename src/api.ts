@@ -3,10 +3,10 @@ import {
   Connection,
   errors,
   validate,
-  xrpToDrops,
-  dropsToXrp,
-  rippleTimeToISO8601,
-  iso8601ToRippleTime,
+  aitdToDrops,
+  dropsToAitd,
+  aitdTimeToISO8601,
+  iso8601ToAitdTime,
   txFlags,
   ensureClassicAddress
 } from './common'
@@ -108,7 +108,7 @@ import {
 export interface APIOptions extends ConnectionUserOptions {
   server?: string
   feeCushion?: number
-  maxFeeXRP?: string
+  maxFeeAITD?: string
   proxy?: string
   timeout?: number
 }
@@ -130,12 +130,12 @@ function getCollectKeyFromCommand(command: string): string | undefined {
   }
 }
 
-class RippleAPI extends EventEmitter {
+class AitdAPI extends EventEmitter {
   _feeCushion: number
-  _maxFeeXRP: string
+  _maxFeeAITD: string
 
   // New in > 0.21.0
-  // non-validated ledger versions are allowed, and passed to rippled as-is.
+  // non-validated ledger versions are allowed, and passed to aitdd as-is.
   connection: Connection
 
   // these are exposed only for use by unit tests; they are not part of the API.
@@ -153,7 +153,7 @@ class RippleAPI extends EventEmitter {
     super()
     validate.apiOptions(options)
     this._feeCushion = options.feeCushion || 1.2
-    this._maxFeeXRP = options.maxFeeXRP || '2'
+    this._maxFeeAITD = options.maxFeeAITD || '2'
     const serverURL = options.server
     if (serverURL !== undefined) {
       this.connection = new Connection(serverURL, options)
@@ -242,7 +242,7 @@ class RippleAPI extends EventEmitter {
    * When there are more results than contained in the response, the response
    * includes a `marker` field.
    *
-   * See https://ripple.com/build/rippled-apis/#markers-and-pagination
+   * See https://aitd.com/build/aitdd-apis/#markers-and-pagination
    */
   hasNextPage<T extends {marker?: string}>(currentResponse: T): boolean {
     return !!currentResponse.marker
@@ -297,7 +297,7 @@ class RippleAPI extends EventEmitter {
    * know which response key contains the array of resources.
    *
    * NOTE: This command is used by existing methods and is not recommended for
-   * general use. Instead, use rippled's built-in pagination and make multiple
+   * general use. Instead, use aitdd's built-in pagination and make multiple
    * requests as needed.
    */
   async _requestAll(
@@ -414,14 +414,14 @@ class RippleAPI extends EventEmitter {
 
   static deriveXAddress = deriveXAddress
 
-  // RippleAPI.deriveClassicAddress (static) is a new name for api.deriveAddress
+  // AitdAPI.deriveClassicAddress (static) is a new name for api.deriveAddress
   static deriveClassicAddress = deriveAddress
 
   static isValidXAddress = isValidXAddress
   static isValidClassicAddress = isValidClassicAddress
 
   /**
-   * Static methods that replace functionality from the now-deprecated ripple-hashes library
+   * Static methods that replace functionality from the now-deprecated aitd-hashes library
    */
   // Compute the hash of a binary transaction blob.
   static computeBinaryTransactionHash = computeBinaryTransactionHash // (txBlobHex: string): string
@@ -445,10 +445,10 @@ class RippleAPI extends EventEmitter {
   // Compute the hash of a payment channel, given the owner's classic address (starting with `r`), the classic address of the destination, and the account sequence number of the `PaymentChannelCreate` payment channel transaction.
   static computePaymentChannelHash = computePaymentChannelHash // (address, dstAddress, sequence): string
 
-  xrpToDrops = xrpToDrops
-  dropsToXrp = dropsToXrp
-  rippleTimeToISO8601 = rippleTimeToISO8601
-  iso8601ToRippleTime = iso8601ToRippleTime
+  aitdToDrops = aitdToDrops
+  dropsToAitd = dropsToAitd
+  aitdTimeToISO8601 = aitdTimeToISO8601
+  iso8601ToAitdTime = iso8601ToAitdTime
   txFlags = txFlags
 
   isValidAddress = schemaValidator.isValidAddress
@@ -456,7 +456,7 @@ class RippleAPI extends EventEmitter {
 }
 
 export {
-  RippleAPI
+  AitdAPI
 }
 
 export type {

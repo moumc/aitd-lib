@@ -32,7 +32,7 @@ function makeRequest(connection, request) {
 }
 
 function main() {
-  const connection = new Connection('wss://s1.ripple.com')
+  const connection = new Connection('wss://s1.aitd.com')
   connection.connect().then(() => {
     console.log('Connected')
     Promise.all([
