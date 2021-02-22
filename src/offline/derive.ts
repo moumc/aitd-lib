@@ -1,4 +1,4 @@
-import {deriveKeypair, deriveAddress} from 'ripple-keypairs'
+import {deriveKeypair, deriveAddress} from 'aitd-keypairs'
 import {classicAddressToXAddress} from 'aitd-address-codec'
 
 function deriveXAddress(options: {

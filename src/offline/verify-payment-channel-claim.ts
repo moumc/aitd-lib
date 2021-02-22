@@ -1,4 +1,4 @@
-import keypairs from 'ripple-keypairs'
+import keypairs from 'aitd-keypairs'
 import binary from 'aitd-binary-codec'
 import {validate, xrpToDrops} from '../common'
 

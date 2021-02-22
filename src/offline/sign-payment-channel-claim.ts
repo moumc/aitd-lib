@@ -1,5 +1,5 @@
 import * as common from '../common'
-import keypairs from 'ripple-keypairs'
+import keypairs from 'aitd-keypairs'
 import binary from 'aitd-binary-codec'
 const {validate, xrpToDrops} = common
 

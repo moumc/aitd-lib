@@ -1,5 +1,5 @@
 import {classicAddressToXAddress} from 'aitd-address-codec'
-import keypairs from 'ripple-keypairs'
+import keypairs from 'aitd-keypairs'
 import {errors, validate} from '../common'
 
 export type GeneratedAddress = {
