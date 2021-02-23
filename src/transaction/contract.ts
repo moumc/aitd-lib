@@ -6,7 +6,7 @@ const validate = utils.common.validate
 const ValidationError = utils.common.errors.ValidationError
 import {Instructions, Prepare, TransactionJSON} from './types'
 // import {
-//   // Amount,
+//     Amount,
 //   Adjustment,
 //   MaxAdjustment,
 //   MinAdjustment,
@@ -22,6 +22,7 @@ export interface Contract {
   // paths?: string
   contractData?: string
   fee: string
+  amount: string
   // memos?: Array<Memo>
   // A 256-bit hash that can be used to identify a particular payment
   // invoiceID?: string
@@ -163,8 +164,8 @@ function createPaymentTransaction(
       ContractAddress: destinationAddressAndTag.classicAccount,
       ContractData: contract.contractData.toUpperCase(),
       Fee: contract.fee,
-      Flags: 0
-      // Amount: contract.amount
+      Flags: 0,
+      Amount: contract.amount
   };
 
   // const contract = _.cloneDeep(contractArgument)

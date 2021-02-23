@@ -19,8 +19,12 @@
     "fee": {
       "description": "The contract transction fee",
       "type": "string"
+    },
+    "amount": {
+      "description": "The contract amount",
+      "type": "string"
     }
   },
-  "required": ["source", "contractData", "fee"],
+  "required": ["source", "contractData", "fee", "amount"],
   "additionalProperties": false
 }

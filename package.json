@@ -1,6 +1,6 @@
 {
   "name": "aitd-lib",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "license": "ISC",
   "description": "A TypeScript/JavaScript API for interacting with the AITD Ledger in Node.js and the browser",
   "files": [
@@ -28,7 +28,7 @@
     "lodash": "^4.17.4",
     "lodash.isequal": "^4.5.0",
     "aitd-address-codec": "^1.0.3",
-    "aitd-binary-codec": "^1.0.2",
+    "aitd-binary-codec": "^1.0.5",
     "aitd-keypairs": "^1.0.1",
     "aitd-lib-transactionparser": "0.0.2",
     "ws": "^7.2.0"
